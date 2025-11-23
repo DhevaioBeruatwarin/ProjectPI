@@ -1,28 +1,55 @@
 @extends('layouts.admin')
 
-@section('content')
-<h1>Kelola Karya Seni</h1>
+@section('title', 'Kelola Karya Seni')
 
-<table border="1" cellpadding="6">
-    <tr>
-        <th>Kode</th>
-        <th>Judul</th>
-        <th>Seniman</th>
-        <th>Aksi</th>
-    </tr>
-    @foreach($karya as $k)
-    <tr>
-        <td>{{ $k->kode_seni }}</td>
-        <td>{{ $k->judul }}</td>
-        <td>{{ $k->seniman->nama ?? '-' }}</td>
-        <td>
-            <form action="{{ route('admin.karya.delete', $k->kode_seni) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit">Hapus</button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</table>
+@section('content')
+<div class="admin-content">
+
+    <h1 class="admin-title">Kelola Karya Seni</h1>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Kode Seni</th>
+                <th>Nama Karya</th>
+                <th>Seniman</th>
+                <th>ID Seniman</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($karya as $k)
+            <tr>
+                <td>{{ $k->kode_seni }}</td>
+                <td>{{ $k->nama_karya }}</td>
+                <td>{{ $k->seniman->nama ?? '-' }}</td>
+                <td>{{ $k->id_seniman }}</td>
+                <td>
+                    @if($k->gambar)
+                        <img src="{{ asset('storage/karya_seni/' . $k->gambar) }}" class="karya-img">
+                    @else
+                        -
+                    @endif
+                </td>
+
+                <td>
+                    <form method="POST" 
+                          action="{{ route('admin.karya.delete', $k->kode_seni) }}"
+                          onsubmit="return confirm('Hapus karya ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn-delete">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+
+            @empty
+            <tr><td colspan="6" style="text-align:center;">Tidak ada karya.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+
+</div>
 @endsection

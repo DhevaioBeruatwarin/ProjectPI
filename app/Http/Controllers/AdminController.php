@@ -36,7 +36,7 @@ class AdminController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin.login')->with('success', 'Berhasil logout');
+        return redirect()->route('login')->with('success', 'Berhasil logout');
     }
 
     // ======= DASHBOARD =======
@@ -46,7 +46,7 @@ class AdminController extends Controller
         $jumlahPembeli = Pembeli::count();
         $jumlahKarya = KaryaSeni::count();
 
-        return view('admin.dashboard', compact('jumlahSeniman','jumlahPembeli','jumlahKarya'));
+        return view('admin.dashboard', compact('jumlahSeniman', 'jumlahPembeli', 'jumlahKarya'));
     }
 
     // ======= PROFIL =======
@@ -69,7 +69,7 @@ class AdminController extends Controller
         $admin->email = $request->email;
         $admin->save();
 
-        return redirect()->route('admin.profil')->with('success','Profil berhasil diperbarui!');
+        return redirect()->route('admin.profil')->with('success', 'Profil berhasil diperbarui!');
     }
 
     public function updateFoto(Request $request)
@@ -80,17 +80,17 @@ class AdminController extends Controller
             'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if ($admin->foto && Storage::disk('public')->exists('foto_admin/'.$admin->foto)) {
-            Storage::disk('public')->delete('foto_admin/'.$admin->foto);
+        if ($admin->foto && Storage::disk('public')->exists('foto_admin/' . $admin->foto)) {
+            Storage::disk('public')->delete('foto_admin/' . $admin->foto);
         }
 
-        $namaFoto = time().'_'.$admin->id_admin.'.'.$request->foto->extension();
+        $namaFoto = time() . '_' . $admin->id_admin . '.' . $request->foto->extension();
         $request->foto->storeAs('public/foto_admin', $namaFoto);
 
         $admin->foto = $namaFoto;
         $admin->save();
 
-        return redirect()->route('admin.profil')->with('success','Foto profil berhasil diperbarui!');
+        return redirect()->route('admin.profil')->with('success', 'Foto profil berhasil diperbarui!');
     }
 
     // ======= CRUD SENIMAN =======
@@ -103,7 +103,7 @@ class AdminController extends Controller
     public function hapusSeniman($id)
     {
         Seniman::destroy($id);
-        return back()->with('success','Data seniman berhasil dihapus.');
+        return back()->with('success', 'Data seniman berhasil dihapus.');
     }
 
     // ======= CRUD KARYA =======
@@ -115,8 +115,8 @@ class AdminController extends Controller
 
     public function hapusKarya($kode_seni)
     {
-        KaryaSeni::where('kode_seni',$kode_seni)->delete();
-        return back()->with('success','Data karya berhasil dihapus.');
+        KaryaSeni::where('kode_seni', $kode_seni)->delete();
+        return back()->with('success', 'Data karya berhasil dihapus.');
     }
 
     // ======= CRUD PEMBELI =======
@@ -129,6 +129,6 @@ class AdminController extends Controller
     public function hapusPembeli($id_pembeli)
     {
         Pembeli::destroy($id_pembeli);
-        return back()->with('success','Data pembeli berhasil dihapus.');
+        return back()->with('success', 'Data pembeli berhasil dihapus.');
     }
 }
