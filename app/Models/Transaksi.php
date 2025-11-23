@@ -22,7 +22,8 @@ class Transaksi extends Model
         'id_pembeli',
         'status',
         'payment_type',
-        'paid_at'
+        'paid_at',
+        'cart_id'
     ];
 
     protected $casts = [

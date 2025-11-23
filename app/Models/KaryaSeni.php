@@ -21,6 +21,7 @@ class KaryaSeni extends Model
         'deskripsi',
         'id_seniman',
         'stok',
+        'terjual',
         'gambar'
     ];
 

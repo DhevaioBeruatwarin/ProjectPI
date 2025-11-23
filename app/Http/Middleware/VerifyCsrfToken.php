@@ -12,6 +12,10 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        'payment-callback',      // Tanpa slash
+        '/payment-callback',     // Dengan slash (untuk safety)
+        'payment-callback',
+        '/payment-callback',
+        'payment/*',
     ];
 }
