@@ -25,7 +25,7 @@
                 Semua Pesanan
             </button>
             <button class="tab-btn" data-filter="success">
-                Sampai
+                Berhasil
             </button>
             <button class="tab-btn" data-filter="pending">
                 Pending

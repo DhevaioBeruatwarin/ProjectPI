@@ -23,6 +23,26 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// =====================================================
+// WEBHOOK MIDTRANS - HARUS DI LUAR MIDDLEWARE AUTH!
+// Route ini dipanggil oleh server Midtrans, bukan user
+// =====================================================
+Route::post('/payment-callback', [PaymentController::class, 'paymentCallback'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->name('payment.callback');
+
+// =====================================================
+// TEST ROUTES - HAPUS SETELAH PRODUCTION!
+// =====================================================
+Route::get('/test-webhook-access', function () {
+    return response()->json([
+        'status' => 'OK',
+        'message' => 'Webhook endpoint is accessible',
+        'timestamp' => now(),
+        'app_url' => env('APP_URL')
+    ]);
+});
+
 // DASHBOARD PEMBELI
 Route::prefix('pembeli')
     ->middleware('auth:pembeli')
@@ -48,10 +68,9 @@ Route::prefix('pembeli')
         // Checkout & Payment
         Route::get('/checkout', [PaymentController::class, 'checkoutPreview'])->name('pembeli.checkout.preview');
         Route::post('/checkout/bayar', [PaymentController::class, 'bayar'])->name('pembeli.checkout.bayar');
-        Route::post('/payment/callback', [PaymentController::class, 'paymentCallback'])->name('pembeli.payment.callback');
         Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('pembeli.payment.success');
 
-        // Di dalam group middleware pembeli
+        // My Orders
         Route::get('/myorder', [PaymentController::class, 'myOrders'])->name('pembeli.myorder');
 
         // Logout

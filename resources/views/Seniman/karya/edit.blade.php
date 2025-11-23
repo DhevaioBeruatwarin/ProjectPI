@@ -50,6 +50,11 @@
                 <p style="color:#666; font-size:13px; margin-top:5px;">Gambar saat ini</p>
             </div>
         </div>
+        <div class="form-group">
+    <label class="form-label">Stok</label>
+    <input type="number" name="stok" class="form-input" value="{{ old('stok', $karya->stok) }}" min="0" required>
+    <div class="input-hint">Jumlah karya yang tersedia untuk dijual</div>
+</div>
 
         <button type="submit" class="btn-submit">Simpan Perubahan</button>
     </form>

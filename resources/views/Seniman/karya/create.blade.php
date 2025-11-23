@@ -2,11 +2,12 @@
 
 @section('title', 'Upload Karya Baru')
 
-@section('content')<link rel="stylesheet" href="{{ asset('css/Seniman/karya/create.css') }}">
+@section('content')
+<link rel="stylesheet" href="{{ asset('css/Seniman/karya/create.css') }}">
 
 <div class="upload-container">
     <div class="upload-header">
-        <h2>✨ Upload Karya Baru</h2>
+        <h2>Upload Karya Baru</h2>
         <p>Bagikan karya seni Anda kepada dunia</p>
     </div>
 
@@ -29,6 +30,12 @@
                 <input type="text" id="harga" name="harga" class="form-input" placeholder="0" required>
             </div>
             <div class="input-hint">Masukkan harga dalam Rupiah</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Stok</label>
+            <input type="number" name="stok" class="form-input" placeholder="Masukkan jumlah stok..." min="0" value="1" required>
+            <div class="input-hint">Jumlah karya yang tersedia untuk dijual</div>
         </div>
 
         <div class="form-group">

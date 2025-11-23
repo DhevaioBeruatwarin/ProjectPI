@@ -21,7 +21,6 @@ class DashboardSenimanController extends Controller
         $seniman = Auth::guard('seniman')->user();
         $karyaSeni = KaryaSeni::latest()->get();
 
-
         return view('Seniman.dashboard', compact('seniman', 'karyaSeni'));
     }
 
@@ -77,6 +76,7 @@ class DashboardSenimanController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -91,6 +91,7 @@ class DashboardSenimanController extends Controller
             'nama_karya' => $request->judul,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
+            'stok' => $request->stok,
             'gambar' => $gambarName,
         ]);
 
@@ -118,12 +119,14 @@ class DashboardSenimanController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $karya->nama_karya = $request->judul;
         $karya->deskripsi = $request->deskripsi;
         $karya->harga = $request->harga;
+        $karya->stok = $request->stok;
 
         // Update gambar jika ada file baru
         if ($request->hasFile('gambar')) {

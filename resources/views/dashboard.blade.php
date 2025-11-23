@@ -73,11 +73,29 @@
             @else
                 <div style="width:100%; height:200px; background:#ddd; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Image</div>
             @endif
+            
+            <!-- Stock Badge -->
+            @if($item->stok <= 0)
+                <div class="stock-badge stock-habis">Stok Habis</div>
+            @elseif($item->stok <= 5)
+                <div class="stock-badge stock-terbatas">Stok Terbatas</div>
+            @endif
         </div>
         <div class="product-info">
             <div class="product-name">{{ $item->nama_karya }}</div>
             <div class="product-price">Rp {{ number_format($item->harga, 0, ',', '.') }}</div>
-            <div class="product-reviews">{{ $item->terjual ?? 0 }} terjual</div>
+            
+            <!-- Stock Info -->
+            <div class="product-meta">
+                <div class="product-reviews">{{ $item->terjual ?? 0 }} terjual</div>
+                <div class="product-stock {{ $item->stok <= 0 ? 'stock-out' : ($item->stok <= 5 ? 'stock-low' : 'stock-available') }}">
+                    @if($item->stok <= 0)
+                        <span class="stock-icon">❌</span> Habis
+                    @else
+                        <span class="stock-icon">📦</span> Stok: {{ $item->stok }}
+                    @endif
+                </div>
+            </div>
         </div>
     </a>
 @endforeach

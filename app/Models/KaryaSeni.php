@@ -20,6 +20,8 @@ class KaryaSeni extends Model
         'harga',
         'deskripsi',
         'id_seniman',
+        'stok',
+        'terjual',
         'gambar'
     ];
 
