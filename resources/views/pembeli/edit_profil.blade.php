@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/Seniman/editprofile.css') }}">
 </head>
 <body>
+    @include('components.back-button')
     <header class="seniman-header">
         <div class="header-left">
             <div class="logo"></div>
@@ -40,28 +41,34 @@
                 @method('PUT')
 
                 <div class="field-row">
-                    <label class="field-label">Nama Lengkap</label>
-                    <input type="text" name="nama" class="input-field" value="{{ $pembeli->nama }}" readonly>
+                    <label class="field-label">Username</label>
+                    <input type="text" name="nama" class="input-field" value="{{ old('nama', $pembeli->nama) }}" required>
                 </div>
 
                 <div class="field-row">
                     <label class="field-label">Email</label>
-                    <input type="email" name="email" class="input-field" value="{{ $pembeli->email }}" readonly>
+                    <input type="email" name="email" class="input-field" value="{{ old('email', $pembeli->email) }}" required>
                 </div>
 
                 <div class="field-row">
                     <label class="field-label">No. Telepon</label>
-                    <input type="text" name="no_hp" class="input-field" value="{{ $pembeli->no_hp }}">
+                    <input type="text" name="no_hp" class="input-field" value="{{ old('no_hp', $pembeli->no_hp) }}">
                 </div>
 
                 <div class="field-row">
                     <label class="field-label">Bio Singkat</label>
-                    <textarea name="bio" class="input-field" rows="3">{{ $pembeli->bio ?? '' }}</textarea>
+                    <textarea name="bio" class="input-field" rows="3">{{ old('bio', $pembeli->bio ?? '') }}</textarea>
                 </div>
 
                 <div class="field-row">
                     <label class="field-label">Alamat</label>
-                    <textarea name="alamat" class="input-field" rows="2">{{ $pembeli->alamat ?? '' }}</textarea>
+                    <textarea name="alamat" class="input-field" rows="2">{{ old('alamat', $pembeli->alamat ?? '') }}</textarea>
+                </div>
+
+                <div class="field-row">
+                    <label class="field-label">Foto Profil</label>
+                    <input type="file" name="foto" class="input-field" accept="image/*">
+                    <small class="helper-text">Maksimal 2MB. Kosongkan jika tidak ingin mengganti.</small>
                 </div>
 
                 <div style="text-align: center; margin-top: 25px;">

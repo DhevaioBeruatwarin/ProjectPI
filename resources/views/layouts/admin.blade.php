@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/Seniman/karya/index.css') }}">
 </head>
 <body>
+    @include('components.back-button')
 
     {{-- Sidebar --}}
     @include('Admin.sidebar')

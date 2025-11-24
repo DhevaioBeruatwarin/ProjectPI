@@ -9,6 +9,7 @@
    
 </head>
 <body>
+    @include('components.back-button')
     <!-- Header -->
     <div class="page-header">
         <div class="header-content">

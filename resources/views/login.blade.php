@@ -8,6 +8,7 @@
     
 </head>
 <body>
+  @include('components.back-button')
     <div class="container">
 
         <div class="left-section">

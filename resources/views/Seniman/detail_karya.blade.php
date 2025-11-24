@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/Seniman/detail_karya.css') }}">
 </head>
 <body>
+    @include('components.back-button')
     <!-- Header -->
     <header class="header">
         <div class="container">

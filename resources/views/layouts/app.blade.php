@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 </head>
 <body>
+    @include('components.back-button')
     <header>
         <div class="header-left">
             <div class="logo">

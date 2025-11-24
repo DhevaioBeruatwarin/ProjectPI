@@ -68,6 +68,7 @@
     </style>
 </head>
 <body>
+    @include('components.back-button')
 
 <div class="d-flex">
     <!-- Sidebar -->

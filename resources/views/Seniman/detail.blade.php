@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/Seniman/detail_karya.css') }}">
 </head>
 <body>
+    @include('components.back-button')
 <header style="background-color:#231105; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:10px 20px;">
     <div style="display:flex; align-items:center; gap:10px;">
         <img src="{{ asset('assets/logo.png') }}" alt="Logo" style="width:45px; height:45px;">

@@ -40,6 +40,7 @@
     </style>
 </head>
 <body> 
+    @include('components.back-button')
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="text-center text-white">
@@ -56,6 +57,7 @@
                 <li><a href="{{ route('seniman.profil') }}" class="active">Profil</a></li>
                 <li><a href="{{ route('seniman.karya.index') }}">Karya Saya</a></li>
                 <li><a href="{{ route('seniman.karya.upload') }}">Upload Karya</a></li>
+                <li><a href="{{ route('seniman.chat.index') }}">Chat</a></li>
                 <li><a href="{{ route('seniman.edit.profil') }}">Edit Profil</a></li>
                 <li><a href="{{ route('seniman.logout') }}">Logout</a></li>
             </ul>
