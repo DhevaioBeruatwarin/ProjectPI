@@ -74,11 +74,18 @@ Route::prefix('pembeli')
         // My Orders
         Route::get('/myorder', [PaymentController::class, 'myOrders'])->name('pembeli.myorder');
 
-        // Chat
+        // Chat dengan Seniman
         Route::get('/chat', [ChatController::class, 'pembeliIndex'])->name('pembeli.chat.index');
         Route::post('/chat/start', [ChatController::class, 'pembeliStart'])->name('pembeli.chat.start');
+        Route::get('/chat/start/karya/{kode_seni}', [ChatController::class, 'pembeliStartFromKarya'])->name('pembeli.chat.start.from.karya');
         Route::get('/chat/{conversation}/messages', [ChatController::class, 'pembeliMessages'])->name('pembeli.chat.messages');
         Route::post('/chat/{conversation}/messages', [ChatController::class, 'pembeliSend'])->name('pembeli.chat.send');
+
+        // Chat dengan Pembeli lain
+        Route::get('/chat/pembeli', [ChatController::class, 'pembeliToPembeliIndex'])->name('pembeli.chat.pembeli.index');
+        Route::post('/chat/pembeli/start', [ChatController::class, 'pembeliToPembeliStart'])->name('pembeli.chat.pembeli.start');
+        Route::get('/chat/pembeli/{conversation}/messages', [ChatController::class, 'pembeliToPembeliMessages'])->name('pembeli.chat.pembeli.messages');
+        Route::post('/chat/pembeli/{conversation}/messages', [ChatController::class, 'pembeliToPembeliSend'])->name('pembeli.chat.pembeli.send');
 
         // Logout
         Route::get('/logout', function () {

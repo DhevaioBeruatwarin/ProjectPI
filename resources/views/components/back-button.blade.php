@@ -1,45 +1,46 @@
 @once
     <style>
         .global-back-button {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1100;
+            position: sticky;
+            top: 12px;
+            margin: 12px 0 16px 12px;
+            z-index: 50;
+            width: fit-content;
         }
 
         .global-back-button button {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 16px;
+            padding: 9px 16px;
             border-radius: 999px;
             border: none;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(35, 35, 35, 0.75);
             color: #fff;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .global-back-button button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
         }
 
         .global-back-button button svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
         }
 
         @media (max-width: 575px) {
             .global-back-button {
-                top: 12px;
-                left: 12px;
+                margin-left: 8px;
+                margin-right: 8px;
             }
 
             .global-back-button button {
-                padding: 8px 12px;
+                padding: 7px 12px;
                 font-size: 0.85rem;
             }
         }

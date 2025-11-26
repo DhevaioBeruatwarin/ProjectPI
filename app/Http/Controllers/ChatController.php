@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Conversation;
 use App\Models\Pembeli;
 use App\Models\Seniman;
+use App\Models\PembeliConversation;
+use App\Models\PembeliChatMessage;
+use App\Models\Transaksi;
+use App\Models\KaryaSeni;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ChatController extends Controller
 {
@@ -27,7 +32,16 @@ class ChatController extends Controller
             ->orderByDesc('updated_at')
             ->get();
 
-        $activeConversation = $this->resolveConversation(
+        // Handle auto-select conversation by seniman_id
+        $selectedConversation = null;
+        if ($request->has('seniman_id')) {
+            $selectedConversation = Conversation::with(['seniman'])
+                ->where('pembeli_id', $pembeli->id_pembeli)
+                ->where('seniman_id', $request->get('seniman_id'))
+                ->first();
+        }
+
+        $activeConversation = $selectedConversation ?? $this->resolveConversation(
             $request->get('conversation'),
             'pembeli',
             $pembeli->id_pembeli,
@@ -40,6 +54,7 @@ class ChatController extends Controller
             $this->markMessagesAsRead($activeConversation, 'pembeli');
         }
 
+        // Tampilkan semua seniman untuk chat (tidak perlu checkout dulu)
         $senimanList = Seniman::orderBy('nama')->get(['id_seniman', 'nama']);
 
         return view('chat.index', [
@@ -68,9 +83,25 @@ class ChatController extends Controller
             'counterpart_id' => 'required|exists:seniman,id_seniman',
         ]);
 
+        // Bebaskan chat tanpa perlu checkout
         $conversation = Conversation::firstOrCreate([
             'pembeli_id' => $pembeli->id_pembeli,
             'seniman_id' => $validated['counterpart_id'],
+        ]);
+
+        return redirect()->route('pembeli.chat.index', ['conversation' => $conversation->id]);
+    }
+
+    public function pembeliStartFromKarya(Request $request, $kode_seni): RedirectResponse
+    {
+        $pembeli = Auth::guard('pembeli')->user();
+
+        $karya = KaryaSeni::with('seniman')->where('kode_seni', $kode_seni)->firstOrFail();
+
+        // Bebaskan chat tanpa perlu checkout - pembeli bisa menanyakan hal mengenai karya seni
+        $conversation = Conversation::firstOrCreate([
+            'pembeli_id' => $pembeli->id_pembeli,
+            'seniman_id' => $karya->id_seniman,
         ]);
 
         return redirect()->route('pembeli.chat.index', ['conversation' => $conversation->id]);
@@ -274,6 +305,174 @@ class ChatController extends Controller
         }
 
         return redirect()->route($redirectRoute, ['conversation' => $conversation->id]);
+    }
+
+    // ========== PEMBELI-TO-PEMBELI CHAT ==========
+
+    public function pembeliToPembeliIndex(Request $request)
+    {
+        $pembeli = Auth::guard('pembeli')->user();
+
+        $conversations = PembeliConversation::with([
+            'pembeli1:id_pembeli,nama,foto',
+            'pembeli2:id_pembeli,nama,foto',
+            'messages' => function ($query) {
+                $query->latest()->limit(1);
+            }
+        ])
+            ->where(function ($query) use ($pembeli) {
+                $query->where('pembeli1_id', $pembeli->id_pembeli)
+                    ->orWhere('pembeli2_id', $pembeli->id_pembeli);
+            })
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $activeConversation = $this->resolvePembeliConversation(
+            $request->get('conversation'),
+            $pembeli->id_pembeli,
+            $conversations->first()
+        );
+
+        $messages = $activeConversation ? $this->loadPembeliMessages($activeConversation) : collect();
+
+        if ($activeConversation) {
+            $this->markPembeliMessagesAsRead($activeConversation, $pembeli->id_pembeli);
+        }
+
+        // Get list of all other pembeli (excluding current user)
+        $pembeliList = Pembeli::where('id_pembeli', '!=', $pembeli->id_pembeli)
+            ->orderBy('nama')
+            ->get(['id_pembeli', 'nama', 'foto']);
+
+        return view('chat.pembeli-to-pembeli', [
+            'conversations' => $conversations,
+            'activeConversation' => $activeConversation,
+            'messages' => $messages,
+            'counterparts' => $pembeliList,
+            'currentPembeli' => $pembeli,
+        ]);
+    }
+
+    public function pembeliToPembeliStart(Request $request): RedirectResponse
+    {
+        $pembeli = Auth::guard('pembeli')->user();
+
+        $validated = $request->validate([
+            'counterpart_id' => 'required|exists:pembeli,id_pembeli|different:' . $pembeli->id_pembeli,
+        ], [
+            'counterpart_id.different' => 'Anda tidak dapat chat dengan diri sendiri.',
+        ]);
+
+        $counterpartId = $validated['counterpart_id'];
+
+        // Ensure consistent ordering (smaller ID first) to avoid duplicates
+        $pembeli1Id = min($pembeli->id_pembeli, $counterpartId);
+        $pembeli2Id = max($pembeli->id_pembeli, $counterpartId);
+
+        $conversation = PembeliConversation::firstOrCreate([
+            'pembeli1_id' => $pembeli1Id,
+            'pembeli2_id' => $pembeli2Id,
+        ]);
+
+        return redirect()->route('pembeli.chat.pembeli.index', ['conversation' => $conversation->id]);
+    }
+
+    public function pembeliToPembeliMessages(PembeliConversation $conversation): JsonResponse
+    {
+        $pembeli = Auth::guard('pembeli')->user();
+        $this->ensurePembeliConversationAccess($conversation, $pembeli->id_pembeli);
+        $this->markPembeliMessagesAsRead($conversation, $pembeli->id_pembeli);
+
+        return $this->pembeliMessagesResponse($conversation, $pembeli->id_pembeli);
+    }
+
+    public function pembeliToPembeliSend(Request $request, PembeliConversation $conversation)
+    {
+        $pembeli = Auth::guard('pembeli')->user();
+        $this->ensurePembeliConversationAccess($conversation, $pembeli->id_pembeli);
+
+        $request->validate([
+            'message' => 'required|string|max:2000',
+        ]);
+
+        $message = $conversation->messages()->create([
+            'sender_id' => $pembeli->id_pembeli,
+            'message' => $request->message,
+            'is_read' => false,
+        ]);
+
+        $conversation->touch();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'id' => $message->id,
+                'message' => $message->message,
+                'sender_id' => $message->sender_id,
+                'sent_at' => optional($message->created_at)->format('d M H:i'),
+            ], 201);
+        }
+
+        return redirect()->route('pembeli.chat.pembeli.index', ['conversation' => $conversation->id]);
+    }
+
+    // ========== PRIVATE HELPERS FOR PEMBELI-TO-PEMBELI ==========
+
+    private function resolvePembeliConversation(?string $conversationId, int $pembeliId, $fallback = null): ?PembeliConversation
+    {
+        if ($conversationId) {
+            $conversation = PembeliConversation::with(['pembeli1', 'pembeli2'])
+                ->where(function ($query) use ($pembeliId) {
+                    $query->where('pembeli1_id', $pembeliId)
+                        ->orWhere('pembeli2_id', $pembeliId);
+                })
+                ->where('id', $conversationId)
+                ->first();
+
+            return $conversation && $conversation->hasPembeli($pembeliId) ? $conversation : null;
+        }
+
+        return $fallback && $fallback->hasPembeli($pembeliId) ? $fallback : null;
+    }
+
+    private function loadPembeliMessages(PembeliConversation $conversation): Collection
+    {
+        return $conversation->messages()
+            ->with('sender:id_pembeli,nama,foto')
+            ->orderBy('created_at')
+            ->get();
+    }
+
+    private function markPembeliMessagesAsRead(PembeliConversation $conversation, int $pembeliId): void
+    {
+        $conversation->messages()
+            ->where('sender_id', '!=', $pembeliId)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+    }
+
+    private function ensurePembeliConversationAccess(PembeliConversation $conversation, int $pembeliId): void
+    {
+        abort_if(!$conversation->hasPembeli($pembeliId), 403, 'Akses chat tidak valid.');
+    }
+
+    private function pembeliMessagesResponse(PembeliConversation $conversation, int $currentPembeliId): JsonResponse
+    {
+        $messages = $conversation->messages()
+            ->with('sender:id_pembeli,nama,foto')
+            ->orderBy('created_at')
+            ->get()
+            ->map(function ($message) use ($currentPembeliId) {
+                return [
+                    'id' => $message->id,
+                    'sender_id' => $message->sender_id,
+                    'sender_name' => $message->sender->nama ?? 'Unknown',
+                    'message' => $message->message,
+                    'sent_at' => optional($message->created_at)->format('d M H:i'),
+                    'is_self' => $message->sender_id === $currentPembeliId,
+                ];
+            });
+
+        return response()->json(['messages' => $messages]);
     }
 }
 

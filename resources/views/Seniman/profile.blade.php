@@ -102,17 +102,23 @@
                 </div>
 
                 <div class="profile-photo col-md-4">
-                    @if($seniman->foto)
-                        <img src="{{ asset('storage/foto_seniman/' . $seniman->foto) }}?v={{ time() }}" 
-                             alt="Foto Seniman" 
-                             id="profileImage"
-                             style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
-                    @else
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" 
-                             alt="Avatar Default" 
-                             id="profileImage"
-                             style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
-                    @endif
+                    @php
+                        use Illuminate\Support\Facades\Storage;
+                        $fotoPath = null;
+                        $defaultImage = asset('assets/defaultprofile.png');
+                        
+                        if ($seniman->foto) {
+                            // Cek apakah file ada di storage
+                            if (Storage::disk('public')->exists('foto_seniman/' . $seniman->foto)) {
+                                $fotoPath = asset('storage/foto_seniman/' . $seniman->foto);
+                            }
+                        }
+                    @endphp
+                    <img src="{{ $fotoPath ? $fotoPath . '?v=' . time() : $defaultImage }}" 
+                         alt="Foto Seniman" 
+                         id="profileImage"
+                         onerror="this.src='{{ $defaultImage }}'; this.onerror=null;"
+                         style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
                     <form action="{{ route('seniman.profil.foto.update') }}" 
                           method="POST" 
                           enctype="multipart/form-data" 

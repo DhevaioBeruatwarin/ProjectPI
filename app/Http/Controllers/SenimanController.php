@@ -69,10 +69,10 @@ class SenimanController extends Controller
             $data = [
                 'nama' => $request->nama,
                 'email' => $request->email,
-                'no_hp' => $request->no_hp,
-                'bidang' => $request->bidang,
-                'bio' => $request->bio,
-                'alamat' => $request->alamat,
+                    'no_hp' => $request->no_hp,
+                    'bidang' => $request->bidang,
+                    'bio' => $request->bio,
+                    'alamat' => $request->alamat,
             ];
 
             if ($request->hasFile('foto')) {

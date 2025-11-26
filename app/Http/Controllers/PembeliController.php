@@ -70,9 +70,9 @@ class PembeliController extends Controller
             $data = [
                 'nama' => $request->nama,
                 'email' => $request->email,
-                'no_hp' => $request->no_hp,
-                'alamat' => $request->alamat,
-                'bio' => $request->bio,
+                    'no_hp' => $request->no_hp,
+                    'alamat' => $request->alamat,
+                    'bio' => $request->bio,
             ];
 
             if ($request->hasFile('foto')) {
