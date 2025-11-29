@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="{{ asset('css/register.css') }}">
 </head>
 <body>
-  @include('components.back-button')
   <div class="container">
     <!-- LEFT SECTION -->
     <div class="left-section">

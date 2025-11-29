@@ -26,7 +26,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // =====================================================
 // WEBHOOK MIDTRANS - HARUS DI LUAR MIDDLEWARE AUTH!
-// Route ini dipanggil oleh server Midtrans, bukan user
 // =====================================================
 Route::post('/payment-callback', [PaymentController::class, 'paymentCallback'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
@@ -51,7 +50,7 @@ Route::prefix('pembeli')
 
         // Dashboard
         Route::get('/dashboard', [DashboardPembeliController::class, 'index'])->name('pembeli.dashboard');
-        Route::get('/dashboard/pembeli/search', [KaryaSeniController::class, 'search'])->name('dashboard.seniman.search');
+        Route::get('/dashboard/pembeli/search', [KaryaSeniController::class, 'search'])->name('dashboard.pembeli.search');
 
         // Profil
         Route::get('/profil', [PembeliController::class, 'profil'])->name('pembeli.profil');
@@ -73,6 +72,9 @@ Route::prefix('pembeli')
 
         // My Orders
         Route::get('/myorder', [PaymentController::class, 'myOrders'])->name('pembeli.myorder');
+
+        // DETAIL KARYA UNTUK PEMBELI - PASTIKAN DI DALAM GRUP PEMBELI
+        Route::get('/karya/{kode_seni}', [KaryaSeniController::class, 'showForPembeli'])->name('pembeli.karya.detail');
 
         // Chat dengan Seniman
         Route::get('/chat', [ChatController::class, 'pembeliIndex'])->name('pembeli.chat.index');
@@ -99,7 +101,7 @@ Route::prefix('seniman')
     ->middleware('auth:seniman')
     ->group(function () {
         Route::get('/dashboard', [DashboardSenimanController::class, 'index'])->name('seniman.dashboard');
-        Route::get('/dashboard/pembeli/search', [KaryaSeniController::class, 'search'])->name('dashboard.pembeli.search');
+        Route::get('/dashboard/pembeli/search', [KaryaSeniController::class, 'search'])->name('dashboard.seniman.search');
 
         Route::get('/profil', [SenimanController::class, 'profile'])->name('seniman.profil');
         Route::get('/profil/edit', [SenimanController::class, 'edit'])->name('seniman.edit.profil');
@@ -113,6 +115,9 @@ Route::prefix('seniman')
         Route::put('/karya/update/{kode_seni}', [DashboardSenimanController::class, 'updateKarya'])->name('seniman.karya.update');
         Route::delete('/karya/delete/{kode_seni}', [DashboardSenimanController::class, 'destroyKarya'])->name('seniman.karya.delete');
 
+        // DETAIL KARYA UNTUK SENIMAN - PASTIKAN DI DALAM GRUP SENIMAN
+        Route::get('/karya/{kode_seni}', [KaryaSeniController::class, 'showForSeniman'])->name('seniman.karya.detail');
+
         Route::get('/logout', function () {
             Auth::guard('seniman')->logout();
             return redirect()->route('login')->with('success', 'Berhasil logout!');
@@ -125,8 +130,14 @@ Route::prefix('seniman')
         Route::post('/chat/{conversation}/messages', [ChatController::class, 'senimanSend'])->name('seniman.chat.send');
     });
 
-// DETAIL KARYA
-Route::get('/karya/{kode_seni}', [KaryaSeniController::class, 'show'])->name('karya.detail');
+// HAPUS ROUTE CAMPURAN INI:
+// Route::middleware(['auth:pembeli'])->group(function () {
+//     Route::get('/karya/{kode_seni}', [KaryaSeniController::class, 'showForPembeli'])->name('pembeli.karya.detail');
+// });
+//
+// Route::middleware(['auth:seniman'])->group(function () {
+//     Route::get('/karya/{kode_seni}', [KaryaSeniController::class, 'showForSeniman'])->name('seniman.karya.detail');
+// });
 
 // DASHBOARD ADMIN
 Route::prefix('admin')

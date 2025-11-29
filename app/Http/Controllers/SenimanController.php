@@ -43,23 +43,16 @@ class SenimanController extends Controller
     }
 
     // Simpan perubahan profil (nama & email tidak bisa diubah)
+    // Simpan perubahan profil (tanpa bisa ubah nama & email)
     public function update(Request $request)
     {
         $seniman = $this->currentSeniman();
 
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('seniman', 'email')->ignore($seniman->id_seniman, 'id_seniman'),
-                Rule::unique('pembeli', 'email'),
-                Rule::unique('admin', 'email'),
-            ],
             'no_hp' => 'nullable|string|max:20',
             'bidang' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
-            'alamat' => 'nullable|string',
+            'alamat' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -67,12 +60,10 @@ class SenimanController extends Controller
             $senimanModel = Seniman::findOrFail($seniman->id_seniman);
 
             $data = [
-                'nama' => $request->nama,
-                'email' => $request->email,
-                    'no_hp' => $request->no_hp,
-                    'bidang' => $request->bidang,
-                    'bio' => $request->bio,
-                    'alamat' => $request->alamat,
+                'no_hp' => $request->no_hp,
+                'bidang' => $request->bidang,
+                'bio' => $request->bio,
+                'alamat' => $request->alamat,
             ];
 
             if ($request->hasFile('foto')) {

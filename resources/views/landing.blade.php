@@ -9,7 +9,6 @@
 </head>
 
 <body>
-    @include('components.back-button')
     <div id="bunga-container"></div>
     <!-- Navbar -->
     <header class="navbar">

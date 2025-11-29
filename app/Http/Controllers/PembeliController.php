@@ -50,14 +50,6 @@ class PembeliController extends Controller
         $pembeli = $this->currentPembeli();
 
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('pembeli', 'email')->ignore($pembeli->id_pembeli, 'id_pembeli'),
-                Rule::unique('seniman', 'email'),
-                Rule::unique('admin', 'email'),
-            ],
             'no_hp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
@@ -68,11 +60,9 @@ class PembeliController extends Controller
             $pembeliModel = Pembeli::findOrFail($pembeli->id_pembeli);
 
             $data = [
-                'nama' => $request->nama,
-                'email' => $request->email,
-                    'no_hp' => $request->no_hp,
-                    'alamat' => $request->alamat,
-                    'bio' => $request->bio,
+                'no_hp' => $request->no_hp,
+                'alamat' => $request->alamat,
+                'bio' => $request->bio,
             ];
 
             if ($request->hasFile('foto')) {
@@ -88,6 +78,7 @@ class PembeliController extends Controller
             return redirect()->back()->with('error', 'Gagal memperbarui profil: ' . $e->getMessage());
         }
     }
+
 
     // Upload foto profil
     public function updateFoto(Request $request)

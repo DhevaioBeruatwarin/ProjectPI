@@ -11,7 +11,6 @@
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 </head>
 <body>
-    @include('components.back-button')
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div>

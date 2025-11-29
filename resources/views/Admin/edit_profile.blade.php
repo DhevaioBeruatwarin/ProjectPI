@@ -29,7 +29,6 @@
     </style>
 </head>
 <body>
-    @include('components.back-button')
     <div class="form-container">
         <h3 class="text-center mb-4">Edit Profil Admin</h3>
 

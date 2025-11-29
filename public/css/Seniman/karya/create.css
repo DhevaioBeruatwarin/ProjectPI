@@ -1,155 +1,317 @@
-    body{
-        background-color: whitesmoke;
-    }
-    .upload-container {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-        padding: 40px;
-    }
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    .upload-header {
-        text-align: center;
-        margin-bottom: 35px;
+body {
+    background: #f5f5f5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color: #111;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ===== CONTAINER ===== */
+.upload-container {
+    max-width: 800px;
+    margin: 60px auto;
+    background: #fff;
+    padding: 60px 80px;
+}
+
+/* ===== HEADER ===== */
+.upload-header {
+    margin-bottom: 48px;
+}
+
+.upload-header h2 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #111;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.upload-header p {
+    font-size: 18px;
+    color: #757575;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+}
+
+/* ===== FORM GROUPS ===== */
+.form-group {
+    margin-bottom: 32px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: inherit;
+    color: #111;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.form-input::placeholder {
+    color: #8d8d8d;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #111;
+    background: #fff;
+}
+
+.form-input:hover {
+    border-color: #8d8d8d;
+}
+
+.form-textarea {
+    min-height: 140px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+/* ===== CURRENCY INPUT ===== */
+.currency-prefix {
+    position: relative;
+}
+
+.currency-prefix::before {
+    content: 'Rp';
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #111;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.currency-prefix .form-input {
+    padding-left: 55px;
+}
+
+/* ===== FILE INPUT ===== */
+.file-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.file-input-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    background: #f5f5f5;
+    border: 2px dashed #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-input-label:hover {
+    background: #e5e5e5;
+    border-color: #111;
+}
+
+.file-input-label > div:first-child {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.file-input-label > div:nth-child(2) {
+    color: #111;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.file-input-label > div:nth-child(3) {
+    color: #757575;
+    font-size: 14px;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-name {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #111;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ===== HINTS ===== */
+.input-hint {
+    font-size: 13px;
+    color: #757575;
+    margin-top: 8px;
+    font-weight: 400;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.btn-submit {
+    width: 100%;
+    padding: 20px 24px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-submit:hover {
+    background: #000;
+    transform: scale(1.01);
+}
+
+.btn-submit:active {
+    transform: scale(0.99);
+}
+
+/* ===== NUMBER INPUT ARROWS REMOVE ===== */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .upload-container {
+        margin: 30px 20px;
+        padding: 40px 30px;
     }
 
     .upload-header h2 {
-        color: #1a1a1a;
-        font-size: 28px;
-        font-weight: 600;
-        margin-bottom: 8px;
+        font-size: 32px;
     }
 
     .upload-header p {
-        color: #666;
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .form-group {
-        margin-bottom: 24px;
-    }
-
-    .form-label {
-        display: block;
-        color: #333;
-        font-weight: 500;
-        margin-bottom: 8px;
-        font-size: 14px;
+        margin-bottom: 28px;
     }
 
     .form-input {
-        width: 100%;
-        padding: 12px 16px;
-        border: 1.5px solid #e0e0e0;
-        border-radius: 10px;
+        padding: 14px 16px;
         font-size: 15px;
-        transition: all 0.3s ease;
-        background: #fafafa;
-    }
-
-    .form-input:focus {
-        outline: none;
-        border-color: #4a90e2;
-        background: white;
-        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-    }
-
-    .form-textarea {
-        min-height: 120px;
-        resize: vertical;
-        font-family: inherit;
-    }
-
-    .file-input-wrapper {
-        position: relative;
-        overflow: hidden;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .file-input-label {
-        display: block;
-        padding: 40px 20px;
-        background: #f8f9fa;
-        border: 2px dashed #d0d0d0;
-        border-radius: 10px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .file-input-label:hover {
-        border-color: #4a90e2;
-        background: #f0f7ff;
-    }
-
-    .file-input-label i {
-        font-size: 32px;
-        color: #999;
-        margin-bottom: 10px;
-    }
-
-    .file-input {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    .file-name {
-        margin-top: 10px;
-        font-size: 13px;
-        color: #666;
-    }
-
-    .currency-prefix {
-        position: relative;
     }
 
     .currency-prefix::before {
-        content: 'Rp';
-        position: absolute;
         left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #666;
-        font-weight: 500;
     }
 
     .currency-prefix .form-input {
-        padding-left: 45px;
+        padding-left: 50px;
+    }
+
+    .file-input-label {
+        padding: 40px 20px;
+    }
+
+    .file-input-label > div:first-child {
+        font-size: 40px;
     }
 
     .btn-submit {
-        width: 100%;
-        padding: 14px;
-        background: linear-gradient(135deg, #ec910a 0%, #fac106 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 10px;
+        padding: 16px 20px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .upload-container {
+        margin: 20px 15px;
+        padding: 30px 20px;
     }
 
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+    .upload-header {
+        margin-bottom: 36px;
     }
 
-    .btn-submit:active {
-        transform: translateY(0);
+    .upload-header h2 {
+        font-size: 28px;
     }
 
-    .input-hint {
-        font-size: 12px;
-        color: #888;
-        margin-top: 6px;
+    .upload-header p {
+        font-size: 15px;
     }
+
+    .form-label {
+        font-size: 13px;
+    }
+
+    .form-input {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+
+    .currency-prefix::before {
+        font-size: 14px;
+    }
+
+    .file-input-label {
+        padding: 30px 20px;
+    }
+
+    .file-input-label > div:first-child {
+        font-size: 36px;
+        margin-bottom: 12px;
+    }
+
+    .file-input-label > div:nth-child(2) {
+        font-size: 14px;
+    }
+
+    .file-input-label > div:nth-child(3) {
+        font-size: 13px;
+    }
+
+    .btn-submit {
+        padding: 14px 18px;
+        font-size: 14px;
+        border-radius: 25px;
+    }
+}

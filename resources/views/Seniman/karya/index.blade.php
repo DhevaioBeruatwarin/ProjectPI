@@ -1,16 +1,13 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karya Saya - Jogja Artsphere</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/Seniman/profile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Seniman/karya/index.css') }}">
-   
 </head>
 <body>
-    @include('components.back-button')
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar col-md-3">
@@ -19,6 +16,7 @@
                 <li><a href="{{ route('seniman.profil') }}">Profil</a></li>
                 <li><a href="{{ route('seniman.karya.index') }}" class="active">Karya Saya</a></li>
                 <li><a href="{{ route('seniman.karya.upload') }}">Upload Karya</a></li>
+                <li><a href="{{ route('seniman.chat.index') }}">Chat</a></li>
                 <li><a href="{{ route('seniman.edit.profil') }}">Edit Profil</a></li>
                 <li><a href="{{ route('seniman.logout') }}">Keluar</a></li>
             </ul>
@@ -76,7 +74,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete w-100">
-                                                 Hapus
+                                                Hapus
                                             </button>
                                         </form>
                                     </div>
@@ -89,6 +87,7 @@
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
             <div class="row">

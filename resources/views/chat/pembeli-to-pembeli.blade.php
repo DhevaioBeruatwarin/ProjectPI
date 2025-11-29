@@ -130,7 +130,7 @@
     </style>
 </head>
 <body>
-    @include('components.back-button')
+    
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-11">

@@ -40,7 +40,7 @@
     </style>
 </head>
 <body> 
-    @include('components.back-button')
+
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="text-center text-white">
