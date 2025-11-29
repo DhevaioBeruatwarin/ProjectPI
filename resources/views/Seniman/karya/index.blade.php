@@ -10,6 +10,7 @@
    
 </head>
 <body>
+    @include('components.back-button')
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar col-md-3">

@@ -37,6 +37,7 @@ class KaryaSeniController extends Controller
                 ->limit(8)
                 ->get();
 
+            // Chat selalu tersedia untuk menanyakan hal mengenai karya seni
             return view('Seniman.detail_karya', compact('karya', 'karyaSeniman', 'karyaLainnya', 'averageRating'));
         }
 

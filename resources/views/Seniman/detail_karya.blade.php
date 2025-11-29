@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/Seniman/detail_karya.css') }}">
 </head>
 <body>
+    @include('components.back-button')
     <!-- Header -->
     <header class="header">
         <div class="container">
@@ -106,6 +107,10 @@
                                 Stok Habis
                             </button>
                         @endif
+                        
+                        <a href="{{ route('pembeli.chat.start.from.karya', $karya->kode_seni) }}" class="btn btn-outline-primary" style="margin-top: 10px; width: 100%;">
+                            💬 Tanya ke {{ $karya->seniman->nama ?? 'Seniman' }}
+                        </a>
                     </div>
                 </div>
             </div>

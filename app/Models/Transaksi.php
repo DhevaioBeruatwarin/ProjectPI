@@ -43,4 +43,17 @@ class Transaksi extends Model
     {
         return $this->belongsTo(Pembeli::class, 'id_pembeli', 'id_pembeli');
     }
+
+    // Relasi ke Seniman melalui KaryaSeni
+    public function seniman()
+    {
+        return $this->hasOneThrough(
+            Seniman::class,
+            KaryaSeni::class,
+            'kode_seni', // Foreign key on karya_seni table
+            'id_seniman', // Foreign key on seniman table
+            'kode_seni', // Local key on transaksi table
+            'id_seniman' // Local key on karya_seni table
+        );
+    }
 }

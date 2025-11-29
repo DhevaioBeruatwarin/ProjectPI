@@ -10,6 +10,7 @@ use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\SenimanController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ChatController;
 
 // LANDING PAGE
 Route::get('/', function () {
@@ -73,6 +74,19 @@ Route::prefix('pembeli')
         // My Orders
         Route::get('/myorder', [PaymentController::class, 'myOrders'])->name('pembeli.myorder');
 
+        // Chat dengan Seniman
+        Route::get('/chat', [ChatController::class, 'pembeliIndex'])->name('pembeli.chat.index');
+        Route::post('/chat/start', [ChatController::class, 'pembeliStart'])->name('pembeli.chat.start');
+        Route::get('/chat/start/karya/{kode_seni}', [ChatController::class, 'pembeliStartFromKarya'])->name('pembeli.chat.start.from.karya');
+        Route::get('/chat/{conversation}/messages', [ChatController::class, 'pembeliMessages'])->name('pembeli.chat.messages');
+        Route::post('/chat/{conversation}/messages', [ChatController::class, 'pembeliSend'])->name('pembeli.chat.send');
+
+        // Chat dengan Pembeli lain
+        Route::get('/chat/pembeli', [ChatController::class, 'pembeliToPembeliIndex'])->name('pembeli.chat.pembeli.index');
+        Route::post('/chat/pembeli/start', [ChatController::class, 'pembeliToPembeliStart'])->name('pembeli.chat.pembeli.start');
+        Route::get('/chat/pembeli/{conversation}/messages', [ChatController::class, 'pembeliToPembeliMessages'])->name('pembeli.chat.pembeli.messages');
+        Route::post('/chat/pembeli/{conversation}/messages', [ChatController::class, 'pembeliToPembeliSend'])->name('pembeli.chat.pembeli.send');
+
         // Logout
         Route::get('/logout', function () {
             Auth::guard('pembeli')->logout();
@@ -103,6 +117,12 @@ Route::prefix('seniman')
             Auth::guard('seniman')->logout();
             return redirect()->route('login')->with('success', 'Berhasil logout!');
         })->name('seniman.logout');
+
+        // Chat
+        Route::get('/chat', [ChatController::class, 'senimanIndex'])->name('seniman.chat.index');
+        Route::post('/chat/start', [ChatController::class, 'senimanStart'])->name('seniman.chat.start');
+        Route::get('/chat/{conversation}/messages', [ChatController::class, 'senimanMessages'])->name('seniman.chat.messages');
+        Route::post('/chat/{conversation}/messages', [ChatController::class, 'senimanSend'])->name('seniman.chat.send');
     });
 
 // DETAIL KARYA

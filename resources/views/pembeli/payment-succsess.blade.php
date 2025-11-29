@@ -393,6 +393,7 @@
     </style>
 </head>
 <body>
+    @include('components.back-button')
     <!-- Header -->
     <header>
         <div class="header-left">

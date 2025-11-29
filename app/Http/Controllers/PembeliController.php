@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\Pembeli;
 
 class PembeliController extends Controller
@@ -29,7 +30,7 @@ class PembeliController extends Controller
 
         // Set header untuk mencegah cache
         return response()
-            ->view('Pembeli.profile', compact('pembeli'))
+            ->view('pembeli.profile', compact('pembeli'))
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');
@@ -38,49 +39,49 @@ class PembeliController extends Controller
     // Tampilkan form edit profil
     public function edit()
     {
-        $pembeli = Auth::guard('pembeli')->user();
+        $pembeli = $this->currentPembeli();
 
-        if (!$pembeli) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
-
-        // Ambil data fresh dari database
-        $pembeli = Pembeli::find($pembeli->id_pembeli);
-
-        return view('Pembeli.edit_profil', compact('pembeli'));
+        return view('pembeli.edit_profil', compact('pembeli'));
     }
 
     // Simpan perubahan profil
     public function update(Request $request)
     {
-        $pembeli = Auth::guard('pembeli')->user();
-
-        if (!$pembeli) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
+        $pembeli = $this->currentPembeli();
 
         $request->validate([
+            'nama' => 'required|string|max:100',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('pembeli', 'email')->ignore($pembeli->id_pembeli, 'id_pembeli'),
+                Rule::unique('seniman', 'email'),
+                Rule::unique('admin', 'email'),
+            ],
             'no_hp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
-            // Update langsung ke database
-            DB::table('pembeli')
-                ->where('id_pembeli', $pembeli->id_pembeli)
-                ->update([
+            $pembeliModel = Pembeli::findOrFail($pembeli->id_pembeli);
+
+            $data = [
+                'nama' => $request->nama,
+                'email' => $request->email,
                     'no_hp' => $request->no_hp,
                     'alamat' => $request->alamat,
                     'bio' => $request->bio,
-                    'updated_at' => now()
-                ]);
+            ];
 
-            // Refresh model
-            $pembeli = Pembeli::find($pembeli->id_pembeli);
+            if ($request->hasFile('foto')) {
+                $data['foto'] = $this->replaceFoto($pembeliModel, $request->file('foto'));
+            }
 
-            // Update session auth
-            Auth::guard('pembeli')->setUser($pembeli);
+            $pembeliModel->update($data);
+
+            Auth::guard('pembeli')->setUser($pembeliModel->fresh());
 
             return redirect()->route('pembeli.profil')->with('success', 'Profil berhasil diperbarui!');
         } catch (\Exception $e) {
@@ -91,11 +92,7 @@ class PembeliController extends Controller
     // Upload foto profil
     public function updateFoto(Request $request)
     {
-        $pembeli = Auth::guard('pembeli')->user();
-
-        if (!$pembeli) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
+        $pembeli = $this->currentPembeli();
 
         $request->validate([
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -107,35 +104,38 @@ class PembeliController extends Controller
         ]);
 
         try {
-            $pembeliData = Pembeli::find($pembeli->id_pembeli);
+            $pembeliModel = Pembeli::findOrFail($pembeli->id_pembeli);
+            $filename = $this->replaceFoto($pembeliModel, $request->file('foto'));
 
-            // Hapus foto lama jika ada
-            if ($pembeliData->foto && Storage::disk('public')->exists('foto_pembeli/' . $pembeliData->foto)) {
-                Storage::disk('public')->delete('foto_pembeli/' . $pembeliData->foto);
-            }
-
-            // Upload foto baru
-            $file = $request->file('foto');
-            $filename = time() . '_' . $pembeli->id_pembeli . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('foto_pembeli', $filename, 'public');
-
-            // Update database
-            DB::table('pembeli')
-                ->where('id_pembeli', $pembeli->id_pembeli)
-                ->update([
-                    'foto' => $filename,
-                    'updated_at' => now()
-                ]);
-
-            // Refresh model
-            $pembeliData = Pembeli::find($pembeli->id_pembeli);
-
-            // Update session auth
-            Auth::guard('pembeli')->setUser($pembeliData);
+            $pembeliModel->update(['foto' => $filename]);
+            Auth::guard('pembeli')->setUser($pembeliModel->fresh());
 
             return redirect()->route('pembeli.profil')->with('success', 'Foto profil berhasil diperbarui!')->with('_timestamp', time());
         } catch (\Exception $e) {
             return redirect()->route('pembeli.profil')->with('error', 'Gagal mengupload foto: ' . $e->getMessage());
         }
+    }
+
+    private function currentPembeli(): Pembeli
+    {
+        $pembeli = Auth::guard('pembeli')->user();
+
+        if (!$pembeli) {
+            abort(401, 'Silakan login terlebih dahulu.');
+        }
+
+        return Pembeli::findOrFail($pembeli->id_pembeli);
+    }
+
+    private function replaceFoto(Pembeli $pembeli, UploadedFile $file): string
+    {
+        if ($pembeli->foto && Storage::disk('public')->exists('foto_pembeli/' . $pembeli->foto)) {
+            Storage::disk('public')->delete('foto_pembeli/' . $pembeli->foto);
+        }
+
+        $filename = time() . '_' . $pembeli->id_pembeli . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('foto_pembeli', $filename, 'public');
+
+        return $filename;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,7 +21,9 @@ class Seniman extends Authenticatable
         'password',
         'alamat',
         'no_hp',
-        'foto'
+        'foto',
+        'bio',
+        'bidang',
     ];
 
     protected $hidden = [
@@ -53,5 +56,10 @@ class Seniman extends Authenticatable
     {
         return $this->hasMany(KaryaSeni::class, 'id_seniman', 'id_seniman');
 
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'seniman_id', 'id_seniman');
     }
 }

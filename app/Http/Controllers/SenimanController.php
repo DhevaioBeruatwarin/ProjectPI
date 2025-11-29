@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\Seniman;
 use App\Models\KaryaSeni;
 
@@ -36,13 +37,7 @@ class SenimanController extends Controller
     // Tampilkan form edit profil
     public function edit()
     {
-        $seniman = Auth::guard('seniman')->user();
-
-        if (!$seniman) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
-
-        $seniman = Seniman::find($seniman->id_seniman);
+        $seniman = $this->currentSeniman();
 
         return view('Seniman.edit_profil', compact('seniman'));
     }
@@ -50,35 +45,45 @@ class SenimanController extends Controller
     // Simpan perubahan profil (nama & email tidak bisa diubah)
     public function update(Request $request)
     {
-        $seniman = Auth::guard('seniman')->user();
-
-        if (!$seniman) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
+        $seniman = $this->currentSeniman();
 
         $request->validate([
+            'nama' => 'required|string|max:100',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('seniman', 'email')->ignore($seniman->id_seniman, 'id_seniman'),
+                Rule::unique('pembeli', 'email'),
+                Rule::unique('admin', 'email'),
+            ],
             'no_hp' => 'nullable|string|max:20',
             'bidang' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
             'alamat' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
-            DB::table('seniman')
-                ->where('id_seniman', $seniman->id_seniman)
-                ->update([
+            $senimanModel = Seniman::findOrFail($seniman->id_seniman);
+
+            $data = [
+                'nama' => $request->nama,
+                'email' => $request->email,
                     'no_hp' => $request->no_hp,
                     'bidang' => $request->bidang,
                     'bio' => $request->bio,
                     'alamat' => $request->alamat,
-                    'updated_at' => now()
-                ]);
+            ];
 
-            $seniman = Seniman::find($seniman->id_seniman);
-            Auth::guard('seniman')->setUser($seniman);
+            if ($request->hasFile('foto')) {
+                $data['foto'] = $this->replaceFoto($senimanModel, $request->file('foto'));
+            }
 
-            // Update foto navbar jika ada
-            session(['seniman_foto' => $seniman->foto]);
+            $senimanModel->update($data);
+
+            $senimanFresh = $senimanModel->fresh();
+            Auth::guard('seniman')->setUser($senimanFresh);
+            session(['seniman_foto' => $senimanFresh->foto]);
 
             return redirect()->route('seniman.profil')->with('success', 'Profil berhasil diperbarui!');
         } catch (\Exception $e) {
@@ -89,11 +94,7 @@ class SenimanController extends Controller
     // Upload foto profil
     public function updateFoto(Request $request)
     {
-        $seniman = Auth::guard('seniman')->user();
-
-        if (!$seniman) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
+        $seniman = $this->currentSeniman();
 
         $request->validate([
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -105,29 +106,12 @@ class SenimanController extends Controller
         ]);
 
         try {
-            $senimanData = Seniman::find($seniman->id_seniman);
+            $senimanModel = Seniman::findOrFail($seniman->id_seniman);
+            $filename = $this->replaceFoto($senimanModel, $request->file('foto'));
 
-            // Hapus foto lama
-            if ($senimanData->foto && Storage::disk('public')->exists('foto_seniman/' . $senimanData->foto)) {
-                Storage::disk('public')->delete('foto_seniman/' . $senimanData->foto);
-            }
-
-            // Upload foto baru
-            $file = $request->file('foto');
-            $filename = time() . '_' . $seniman->id_seniman . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('foto_seniman', $filename, 'public');
-
-            DB::table('seniman')
-                ->where('id_seniman', $seniman->id_seniman)
-                ->update([
-                    'foto' => $filename,
-                    'updated_at' => now()
-                ]);
-
-            $senimanData = Seniman::find($seniman->id_seniman);
-            Auth::guard('seniman')->setUser($senimanData);
-
-            // Tambahan: simpan di session supaya navbar langsung update
+            $senimanModel->update(['foto' => $filename]);
+            $senimanFresh = $senimanModel->fresh();
+            Auth::guard('seniman')->setUser($senimanFresh);
             session(['seniman_foto' => $filename]);
 
             return redirect()
@@ -144,6 +128,29 @@ class SenimanController extends Controller
         $seniman = auth()->guard('seniman')->user();
         $karya = KaryaSeni::where('id_seniman', $seniman->id_seniman)->get();
         return view('Seniman.karya.index', compact('karya'));
+    }
+
+    private function currentSeniman(): Seniman
+    {
+        $seniman = Auth::guard('seniman')->user();
+
+        if (!$seniman) {
+            abort(401, 'Silakan login terlebih dahulu.');
+        }
+
+        return Seniman::findOrFail($seniman->id_seniman);
+    }
+
+    private function replaceFoto(Seniman $seniman, UploadedFile $file): string
+    {
+        if ($seniman->foto && Storage::disk('public')->exists('foto_seniman/' . $seniman->foto)) {
+            Storage::disk('public')->delete('foto_seniman/' . $seniman->foto);
+        }
+
+        $filename = time() . '_' . $seniman->id_seniman . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('foto_seniman', $filename, 'public');
+
+        return $filename;
     }
 
 }

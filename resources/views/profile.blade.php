@@ -6,6 +6,7 @@
     <title>Document</title>
 </head>
 <body>
+    @include('components.back-button')
     
 </body>
 </html>
