@@ -60,9 +60,59 @@
                     <div class="product-header">
                         <h1 class="product-title">{{ $karya->nama_karya }}</h1>
                         <p class="product-artist">{{ $karya->seniman->nama ?? 'Unknown Artist' }}</p>
+                        
+                        <!-- Rating Summary -->
+                        @if($averageRating)
+                            <div class="rating-summary">
+                                <div class="stars">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= floor($averageRating))
+                                            <span class="star filled">★</span>
+                                        @elseif($i - 0.5 <= $averageRating)
+                                            <span class="star half">★</span>
+                                        @else
+                                            <span class="star">★</span>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="rating-value">{{ $averageRating }}/5</span>
+                                <span class="rating-count">
+                                    @if($karya->reviews && $karya->reviews->count() > 0)
+                                        ({{ $karya->reviews->count() }} ulasan)
+                                    @else
+                                        (Belum ada ulasan)
+                                    @endif
+                                </span>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="product-price">Rp {{ number_format($karya->harga, 0, ',', '.') }}</div>
+
+                    <!-- Stats Section untuk Pembeli -->
+                    <div class="stats-section">
+                        <h3 class="stats-title">Statistik Karya</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $karya->stok }}</div>
+                                <div class="stat-label">Stok Tersedia</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $karya->terjual ?? 0 }}</div>
+                                <div class="stat-label">Terjual</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">
+                                    @if($averageRating)
+                                        {{ $averageRating }}/5
+                                    @else
+                                        -
+                                    @endif
+                                </div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Stock Status -->
                     <div class="stock-wrapper">
@@ -94,6 +144,12 @@
                         <p>{{ $karya->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}</p>
                     </div>
 
+                    <!-- Kode Seni (untuk informasi) -->
+                    <div class="product-code">
+                        <h3>Kode Karya</h3>
+                        <p class="code-value">{{ $karya->kode_seni }}</p>
+                    </div>
+
                     <!-- Actions -->
                     <div class="product-actions">
                         @if($karya->stok > 0)
@@ -110,12 +166,76 @@
                             <button class="btn btn-disabled" disabled>
                                 Stok Habis
                             </button>
+                            <a href="{{ route('pembeli.chat.start.from.karya', $karya->kode_seni) }}" class="btn btn-chat">
+                                💬 Tanya Stok
+                            </a>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Sales Info Section (seperti di PDP Seniman) -->
+    <section class="sales-section">
+        <div class="container">
+            <h2 class="section-title">Informasi Karya</h2>
+            <div class="sales-grid">
+                <div class="sales-card">
+                    <div class="sales-icon">📦</div>
+                    <div class="sales-content">
+                        <h3>Ketersediaan</h3>
+                        <p class="sales-value">{{ $karya->stok }} unit tersedia</p>
+                        <p class="sales-desc">
+                            @if($karya->stok <= 0)
+                                <span style="color: #e74c3c;">Stok habis</span>
+                            @elseif($karya->stok <= 5)
+                                <span style="color: #f39c12;">Stok terbatas</span>
+                            @else
+                                <span style="color: #2ecc71;">Stok mencukupi</span>
+                            @endif
+                        </p>
+                    </div>
+                </div>
+                <div class="sales-card">
+                    <div class="sales-icon">🔥</div>
+                    <div class="sales-content">
+                        <h3>Popularitas</h3>
+                        <p class="sales-value">{{ $karya->terjual ?? 0 }} terjual</p>
+                        <p class="sales-desc">
+                            @if(($karya->terjual ?? 0) > 50)
+                                <span style="color: #e74c3c;">Sangat laris</span>
+                            @elseif(($karya->terjual ?? 0) > 10)
+                                <span style="color: #f39c12;">Laris</span>
+                            @else
+                                <span style="color: #2ecc71;">Baru diluncurkan</span>
+                            @endif
+                        </p>
+                    </div>
+                </div>
+                <div class="sales-card">
+                    <div class="sales-icon">⭐</div>
+                    <div class="sales-content">
+                        <h3>Rating</h3>
+                        <p class="sales-value">
+                            @if($averageRating)
+                                {{ $averageRating }}/5
+                            @else
+                                Belum ada rating
+                            @endif
+                        </p>
+                        <p class="sales-desc">
+                            @if($karya->reviews && $karya->reviews->count() > 0)
+                                {{ $karya->reviews->count() }} ulasan
+                            @else
+                                Belum ada ulasan
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Related Products -->
     <section class="related-section">
@@ -156,9 +276,101 @@
                                         <span class="meta-sold">{{ $item->terjual }} terjual</span>
                                     @endif
                                 </div>
+
+                                <!-- Rating untuk card -->
+                                @if($item->reviews && $item->reviews->count() > 0)
+                                    @php
+                                        $itemRating = round($item->reviews->avg('nilai'), 1);
+                                    @endphp
+                                    <div class="card-rating">
+                                        <div class="stars">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <span class="star {{ $i <= floor($itemRating) ? 'filled' : '' }}">★</span>
+                                            @endfor
+                                        </div>
+                                        <span class="rating-count">({{ $item->reviews->count() }})</span>
+                                    </div>
+                                @endif
                             </div>
                         </a>
                     @endforeach
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <!-- Ratings & Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <div class="reviews-header">
+                <h2 class="section-title">Ulasan & Rating</h2>
+                
+                @if($averageRating)
+                    <div class="overall-rating">
+                        <div class="rating-score">
+                            <span class="score">{{ $averageRating }}</span>
+                            <span class="out-of">/5</span>
+                        </div>
+                        <div class="rating-details">
+                            <div class="stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= floor($averageRating))
+                                        <span class="star filled">★</span>
+                                    @elseif($i - 0.5 <= $averageRating)
+                                        <span class="star half">★</span>
+                                    @else
+                                        <span class="star">★</span>
+                                    @endif
+                                @endfor
+                            </div>
+                            <p class="total-reviews">
+                                Berdasarkan {{ $karya->reviews->count() }} ulasan
+                            </p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            @if($karya->reviews && $karya->reviews->count() > 0)
+                <div class="reviews-list">
+                    @foreach($karya->reviews as $review)
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">
+                                        @if($review->pembeli && $review->pembeli->foto)
+                                            <img src="{{ asset('storage/foto_pembeli/' . $review->pembeli->foto) }}" alt="{{ $review->pembeli->nama }}">
+                                        @else
+                                            <div class="avatar-placeholder">{{ substr($review->pembeli->nama ?? 'U', 0, 1) }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="reviewer-details">
+                                        <h4 class="reviewer-name">{{ $review->pembeli->nama ?? 'Pengguna' }}</h4>
+                                        <div class="review-meta">
+                                            <div class="review-stars">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <span class="star {{ $i <= $review->nilai ? 'filled' : '' }}">★</span>
+                                                @endfor
+                                            </div>
+                                            <span class="review-date">
+                                                {{ $review->created_at->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="review-content">
+                                <p>{{ $review->komentar ?? 'Tidak ada komentar' }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="no-reviews">
+                    <div class="no-reviews-icon">⭐</div>
+                    <h3>Belum ada ulasan</h3>
+                    <p>Jadilah yang pertama memberikan ulasan untuk karya ini</p>
                 </div>
             @endif
         </div>

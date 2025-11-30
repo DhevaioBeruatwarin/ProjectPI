@@ -7,7 +7,7 @@
 
 <div class="upload-container">
     <div class="upload-header">
-        <h2>🎨 Edit Karya Seni</h2>
+        <h2>Edit Karya Seni</h2>
         <p>Perbarui detail karya Anda di sini</p>
     </div>
 
