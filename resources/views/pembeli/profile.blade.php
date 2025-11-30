@@ -50,6 +50,8 @@
             <ul>
                 <li><a href="{{ route('pembeli.profil') }}" class="active">Profile</a></li>
                 <li><a href="{{ route('pembeli.myorder') }}">My Order</a></li>
+                <li><a href="{{ route('pembeli.chat.index') }}">Chat dengan Seniman</a></li>
+                <li><a href="{{ route('pembeli.chat.pembeli.index') }}">Chat dengan Pembeli</a></li>
                 <li><a href="{{ route('pembeli.profil.edit') }}">Edit Profile</a></li>
                 <li><a href="{{ route('pembeli.logout') }}">Logout</a></li>
             </ul>
@@ -93,17 +95,23 @@
                 </div>
 
                 <div class="profile-photo col-md-4">
-                    @if($pembeli->foto)
-                        <img src="{{ asset('storage/foto_pembeli/' . $pembeli->foto) }}?v={{ time() }}" 
-                             alt="Foto Pembeli" 
-                             id="profileImage"
-                             style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
-                    @else
-                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" 
-                             alt="Avatar Default" 
-                             id="profileImage"
-                             style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
-                    @endif
+                    @php
+                        use Illuminate\Support\Facades\Storage;
+                        $fotoPath = null;
+                        $defaultImage = asset('assets/defaultprofile.png');
+                        
+                        if ($pembeli->foto) {
+                            // Cek apakah file ada di storage
+                            if (Storage::disk('public')->exists('foto_pembeli/' . $pembeli->foto)) {
+                                $fotoPath = asset('storage/foto_pembeli/' . $pembeli->foto);
+                            }
+                        }
+                    @endphp
+                    <img src="{{ $fotoPath ? $fotoPath . '?v=' . time() : $defaultImage }}" 
+                         alt="Foto Pembeli" 
+                         id="profileImage"
+                         onerror="this.src='{{ $defaultImage }}'; this.onerror=null;"
+                         style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
                     <form action="{{ route('pembeli.profil.update_foto') }}" 
                           method="POST" 
                           enctype="multipart/form-data" 

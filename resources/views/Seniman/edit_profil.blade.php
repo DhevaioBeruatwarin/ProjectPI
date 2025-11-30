@@ -3,181 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil Seniman - Jogja Artsphere</title>
     <link rel="stylesheet" href="{{ asset('css/Seniman/editprofile.css') }}">
-    <title>Edit Profil - Jogja Artsphere</title>
-    
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-left">
-            <div class="logo">
-                <img src="{{ asset('assets/logo.png') }}" 
-                     alt="Jogja Artsphere Logo">
-            </div>
-            <div class="logo-text">JOGJA ARTSPHERE</div>
+
+<header class="seniman-header">
+    <div class="header-left">
+        <div class="logo"><img src="{{ asset('assets/logo.png') }}" class="logo"></div>
+        <div class="logo-text">Jogja Artsphere</div>
+    </div>
+    <div class="header-right">
+        <a href="{{ route('seniman.profil') }}" class="back-link">Kembali</a>
+    </div>
+</header>
+
+<main class="profile-page">
+    <section class="profile-card">
+        <h2 class="profile-title">Edit Profil</h2>
+
+        @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+        <div class="alert alert-error">
+            <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
         </div>
-        
-        <form action="{{ route('dashboard.pembeli.search') }}" method="GET" style="display:inline;">
-            <input type="text" name="query" class="search-bar" placeholder="Cari karya..." value="{{ request('query') }}">
+        @endif
+
+        <form action="{{ route('seniman.profil.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf @method('PUT')
+
+            <div class="field-row">
+                <label class="field-label">Nama Lengkap</label>
+                <input type="text" name="nama" class="input-field" value="{{ old('nama', $seniman->nama) }}" disabled>
+            </div>
+
+            <div class="field-row">
+                <label class="field-label">Email</label>
+                <input type="email" name="email" class="input-field" value="{{ old('email', $seniman->email) }}" disabled>
+            </div>
+
+            <div class="field-row">
+                <label class="field-label">Nomor Telepon</label>
+                <input type="text" name="no_hp" class="input-field" value="{{ old('no_hp', $seniman->no_hp) }}">
+            </div>
+
+            <div class="field-row">
+                <label class="field-label">Bidang Seni</label>
+                <input type="text" name="bidang" class="input-field" value="{{ old('bidang', $seniman->bidang) }}" placeholder="Lukis, Patung, Batik, dll">
+            </div>
+
+            <div class="field-row">
+                <label class="field-label">Bio</label>
+                <textarea name="bio" class="input-field">{{ old('bio', $seniman->bio) }}</textarea>
+            </div>
+
+
+            <div class="button-group">
+                <a href="{{ route('seniman.profil') }}" class="btn btn-outline">Batal</a>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+
         </form>
-        
-        <div class="header-right">
-            <a href="{{ route('pembeli.profil') }}" class="back-link">Kembali ke Profil</a>
-            
-            @if(\Illuminate\Support\Facades\Auth::guard('pembeli')->check())
-                @php
-                    $pembeli = Auth::guard('pembeli')->user();
-                    $fotoPath = $pembeli->foto 
-                        ? asset('storage/foto_pembeli/' . $pembeli->foto)
-                        : asset('assets/defaultprofile.png');
-                @endphp
 
-                <a href="{{ route('pembeli.profil') }}" title="Profil">
-                    <img src="{{ $fotoPath }}" 
-                         alt="Foto Profil"
-                         class="profile-icon">
-                </a>
-            @endif
-        </div>
-    </header>
+    </section>
+</main>
 
-    <!-- Main Content -->
-    <main class="profile-page">
-        <section class="profile-card">
-            <h2 class="profile-title">Edit Profil</h2>
-
-            <!-- Success Message -->
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <!-- Error Messages -->
-            @if ($errors->any())
-                <div class="alert alert-error">
-                    <strong>Terjadi Kesalahan:</strong>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <!-- Info Box -->
-            <div class="info-box">
-                <strong>Informasi Penting</strong>
-                Nama dan Email tidak dapat diubah. Hubungi admin jika perlu melakukan perubahan.
-            </div>
-
-            <!-- Form -->
-            <form action="{{ route('pembeli.profil.update') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                <!-- Nama Lengkap (Read-only) -->
-                <div class="field-row">
-                    <label class="field-label">Nama Lengkap</label>
-                    <input 
-                        type="text" 
-                        name="nama" 
-                        class="input-field" 
-                        value="{{ $pembeli->nama }}" 
-                        readonly
-                    >
-                    <div class="helper-text">Field ini tidak dapat diubah</div>
-                </div>
-
-                <!-- Email (Read-only) -->
-                <div class="field-row">
-                    <label class="field-label">Email</label>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        class="input-field" 
-                        value="{{ $pembeli->email }}" 
-                        readonly
-                    >
-                    <div class="helper-text">Field ini tidak dapat diubah</div>
-                </div>
-
-                <!-- No. Telepon -->
-                <div class="field-row">
-                    <label class="field-label">No. Telepon</label>
-                    <input 
-                        type="text" 
-                        name="no_hp" 
-                        class="input-field" 
-                        value="{{ $pembeli->no_hp }}"
-                        placeholder="Contoh: 081234567890"
-                    >
-                    <div class="helper-text">Masukkan nomor telepon aktif Anda</div>
-                </div>
-
-                <!-- Bio Singkat -->
-                <div class="field-row">
-                    <label class="field-label">Bio Singkat</label>
-                    <textarea 
-                        name="bio" 
-                        class="input-field" 
-                        rows="3"
-                        placeholder="Ceritakan sedikit tentang diri Anda..."
-                    >{{ $pembeli->bio ?? '' }}</textarea>
-                    <div class="helper-text">Maksimal 200 karakter</div>
-                </div>
-
-                <!-- Alamat -->
-                <div class="field-row">
-                    <label class="field-label">Alamat</label>
-                    <textarea 
-                        name="alamat" 
-                        class="input-field" 
-                        rows="3"
-                        placeholder="Masukkan alamat lengkap Anda..."
-                    >{{ $pembeli->alamat ?? '' }}</textarea>
-                    <div class="helper-text">Alamat lengkap untuk pengiriman</div>
-                </div>
-
-                <!-- Buttons -->
-                <div class="button-group">
-                    <a href="{{ route('pembeli.profil') }}" class="btn btn-outline">
-                        Batal
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </form>
-        </section>
-    </main>
-
-    <script>
-        // Form validation
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const noHp = document.querySelector('input[name="no_hp"]').value;
-            
-            if (noHp && !/^[0-9]{10,13}$/.test(noHp)) {
-                e.preventDefault();
-                alert('Nomor telepon harus berisi 10-13 digit angka');
-                return false;
-            }
-
-            // Disable button to prevent double submit
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Menyimpan...';
-        });
-
-        // Auto-hide success message after 5 seconds
-        const successAlert = document.querySelector('.alert-success');
-        if (successAlert) {
-            setTimeout(() => {
-                successAlert.style.animation = 'slideUp 0.3s ease-out forwards';
-                setTimeout(() => successAlert.remove(), 300);
-            }, 5000);
-        }
-    </script>
+<script>
+setTimeout( () => document.querySelectorAll('.alert').forEach( e => e.remove() ), 5000);
+</script>
 </body>
 </html>
