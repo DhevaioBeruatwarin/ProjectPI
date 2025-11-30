@@ -50,7 +50,7 @@
     </header>
 
     <!-- HERO BANNER (horizontal) -->
-    <section class="hero-banner" style="background-image: url('{{ asset('assets/hero_banner.jpg') }}');">
+    <section class="hero-banner" style="background-image: url('{{ asset('assets/herroBanner (1).png') }}');">
         <div class="hero-overlay-layer" aria-hidden="true"></div>
 
         <div class="container">
