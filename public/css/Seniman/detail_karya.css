@@ -862,7 +862,193 @@ body {
     }
 }
 
-/* ===== STATS SECTION ===== */
+/* ===== SUPPORT SECTION ===== */
+.support-section {
+    padding: 60px 0;
+    background: #f8f8f8;
+}
+
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.support-card {
+    background: #fff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    transition: transform 0.3s;
+}
+
+.support-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.support-icon {
+    font-size: 40px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.support-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #111;
+}
+
+.support-value {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #3498db;
+}
+
+.support-desc {
+    font-size: 14px;
+    color: #757575;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.support-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #000000;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.support-link:hover {
+    background: #060606;
+}
+
+/* ===== FAQ ACCORDION ===== */
+.faq-accordion {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.faq-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #111;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 16px;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.faq-question {
+    width: 100%;
+    padding: 16px 0;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: color 0.3s;
+}
+
+.faq-question:hover {
+    color: #3498db;
+}
+
+.faq-icon {
+    font-size: 18px;
+    font-weight: 300;
+    transition: transform 0.3s;
+}
+
+.faq-answer {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-answer.active {
+    padding: 0 0 16px 0;
+    max-height: 500px;
+}
+
+.faq-answer p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(45deg);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .support-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .support-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+    
+    .support-icon {
+        margin-bottom: 12px;
+    }
+    
+    .faq-accordion {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .support-card {
+        padding: 20px;
+    }
+    
+    .faq-accordion {
+        padding: 20px;
+    }
+}
+/* ===== STATS SECTION (SAMA DENGAN PDP SENIMAN) ===== */
 .stats-section {
     background: #f8f8f8;
     border-radius: 12px;
@@ -903,90 +1089,6 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* ===== PRODUCT CODE ===== */
-.product-code {
-    margin-bottom: 24px;
-    padding: 16px 0;
-    border-top: 1px solid #e5e5e5;
-}
-
-.product-code h3 {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #111;
-}
-
-.code-value {
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    color: #757575;
-    background: #f8f8f8;
-    padding: 8px 12px;
-    border-radius: 6px;
-    display: inline-block;
-}
-
-/* ===== SALES SECTION ===== */
-.sales-section {
-    padding: 60px 0;
-    background: #f8f8f8;
-}
-
-.sales-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
-}
-
-.sales-card {
-    background: #fff;
-    padding: 32px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    transition: transform 0.3s;
-}
-
-.sales-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.sales-icon {
-    font-size: 40px;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8f8f8;
-    border-radius: 12px;
-}
-
-.sales-content h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #757575;
-}
-
-.sales-value {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #111;
-}
-
-.sales-desc {
-    font-size: 14px;
-    color: #757575;
-}
-
 /* ===== CARD RATING ===== */
 .card-rating {
     display: flex;
@@ -1023,29 +1125,5 @@ body {
     
     .stat-value {
         font-size: 20px;
-    }
-    
-    .sales-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .sales-card {
-        flex-direction: column;
-        text-align: center;
-        padding: 24px;
-    }
-    
-    .sales-icon {
-        margin-bottom: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-section {
-        padding: 16px;
-    }
-    
-    .sales-card {
-        padding: 20px;
     }
 }

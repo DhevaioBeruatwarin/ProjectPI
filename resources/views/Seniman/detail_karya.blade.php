@@ -132,22 +132,12 @@
                                 Tersedia
                             </div>
                         @endif
-
-                        @if(isset($karya->terjual) && $karya->terjual > 0)
-                            <span class="sold-badge">{{ $karya->terjual }} Terjual</span>
-                        @endif
                     </div>
 
                     <!-- Description -->
                     <div class="product-description">
                         <h3>Detail Produk</h3>
                         <p>{{ $karya->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}</p>
-                    </div>
-
-                    <!-- Kode Seni (untuk informasi) -->
-                    <div class="product-code">
-                        <h3>Kode Karya</h3>
-                        <p class="code-value">{{ $karya->kode_seni }}</p>
                     </div>
 
                     <!-- Actions -->
@@ -176,66 +166,85 @@
         </div>
     </main>
 
-    <!-- Sales Info Section (seperti di PDP Seniman) -->
-    <section class="sales-section">
-        <div class="container">
-            <h2 class="section-title">Informasi Karya</h2>
-            <div class="sales-grid">
-                <div class="sales-card">
-                    <div class="sales-icon">📦</div>
-                    <div class="sales-content">
-                        <h3>Ketersediaan</h3>
-                        <p class="sales-value">{{ $karya->stok }} unit tersedia</p>
-                        <p class="sales-desc">
-                            @if($karya->stok <= 0)
-                                <span style="color: #e74c3c;">Stok habis</span>
-                            @elseif($karya->stok <= 5)
-                                <span style="color: #f39c12;">Stok terbatas</span>
-                            @else
-                                <span style="color: #2ecc71;">Stok mencukupi</span>
-                            @endif
-                        </p>
-                    </div>
+<!-- Bantuan & Support Section -->
+<section class="support-section">
+    <div class="container">
+        <h2 class="section-title">Bantuan & Support</h2>
+        <div class="support-grid">
+            <div class="support-card">
+                <div class="support-icon">📞</div>
+                <div class="support-content">
+                    <h3>Customer Service</h3>
+                    <p class="support-value">24/7 Support</p>
+                    <p class="support-desc">Tim kami siap membantu Anda kapan saja</p>
+                    <a href="https://wa.me/6281234567890" class="support-link" target="_blank">
+                        Chat WhatsApp
+                    </a>
                 </div>
-                <div class="sales-card">
-                    <div class="sales-icon">🔥</div>
-                    <div class="sales-content">
-                        <h3>Popularitas</h3>
-                        <p class="sales-value">{{ $karya->terjual ?? 0 }} terjual</p>
-                        <p class="sales-desc">
-                            @if(($karya->terjual ?? 0) > 50)
-                                <span style="color: #e74c3c;">Sangat laris</span>
-                            @elseif(($karya->terjual ?? 0) > 10)
-                                <span style="color: #f39c12;">Laris</span>
-                            @else
-                                <span style="color: #2ecc71;">Baru diluncurkan</span>
-                            @endif
-                        </p>
-                    </div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">🛠️</div>
+                <div class="support-content">
+                    <h3>Panduan Perawatan</h3>
+                    <p class="support-value">Tips Merawat Karya</p>
+                    <p class="support-desc">Jaga keindahan karya seni Anda tetap awet</p>
+                    <button class="support-link" onclick="showCareGuide()">
+                        Baca Panduan
+                    </button>
                 </div>
-                <div class="sales-card">
-                    <div class="sales-icon">⭐</div>
-                    <div class="sales-content">
-                        <h3>Rating</h3>
-                        <p class="sales-value">
-                            @if($averageRating)
-                                {{ $averageRating }}/5
-                            @else
-                                Belum ada rating
-                            @endif
-                        </p>
-                        <p class="sales-desc">
-                            @if($karya->reviews && $karya->reviews->count() > 0)
-                                {{ $karya->reviews->count() }} ulasan
-                            @else
-                                Belum ada ulasan
-                            @endif
-                        </p>
-                    </div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">❓</div>
+                <div class="support-content">
+                    <h3>FAQ</h3>
+                    <p class="support-value">Pertanyaan Umum</p>
+                    <p class="support-desc">Temukan jawaban untuk pertanyaan umum</p>
+                    <button class="support-link" onclick="showFAQ()">
+                        Lihat FAQ
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- FAQ Accordion -->
+        <div class="faq-accordion" id="faqAccordion" style="display: none;">
+            <h3 class="faq-title">Pertanyaan yang Sering Diajukan</h3>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Bagaimana cara merawat karya seni ini?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>• Hindari paparan sinar matahari langsung<br>
+                       • Bersihkan dengan kain lembut dan kering<br>
+                       • Jauhkan dari area lembab<br>
+                       • Simpan pada suhu ruangan</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Apakah karya ini datang dengan sertifikat keaslian?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Ya, setiap karya dilengkapi dengan sertifikat keaslian yang ditandatangani oleh seniman.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Berapa lama waktu pengiriman?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>• Yogyakarta: 1-2 hari<br>
+                       • Jabodetabek: 3-4 hari<br>
+                       • Kota besar lainnya: 4-7 hari<br>
+                       • Daerah terpencil: 7-14 hari</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Related Products -->
     <section class="related-section">
@@ -448,6 +457,36 @@
                 notif.classList.remove('show');
             }, 3000);
         }
+
+
+        // Fungsi untuk FAQ Accordion
+function toggleFAQ(button) {
+    const faqItem = button.parentElement;
+    const answer = button.nextElementSibling;
+    const icon = button.querySelector('.faq-icon');
+    
+    // Toggle active class
+    faqItem.classList.toggle('active');
+    answer.classList.toggle('active');
+    
+    // Change icon
+    if (faqItem.classList.contains('active')) {
+        icon.textContent = '−';
+    } else {
+        icon.textContent = '+';
+    }
+}
+
+// Fungsi untuk menampilkan FAQ
+function showFAQ() {
+    const faqAccordion = document.getElementById('faqAccordion');
+    faqAccordion.style.display = faqAccordion.style.display === 'none' ? 'block' : 'none';
+}
+
+// Fungsi untuk menampilkan panduan perawatan
+function showCareGuide() {
+    alert('Panduan Perawatan:\n\n1. Hindari sinar matahari langsung\n2. Bersihkan dengan kain lembut\n3. Jauhkan dari kelembaban\n4. Simpan di suhu ruangan\n5. Hindari bahan kimia');
+}
     </script>
 </body>
 </html>
