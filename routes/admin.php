@@ -33,6 +33,12 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/pembeli', [AdminController::class, 'kelolaPembeli'])->name('pembeli.index');
     Route::delete('/pembeli/{id_pembeli}', [AdminController::class, 'hapusPembeli'])->name('pembeli.delete');
 
+    Route::get('/monitoring/sistem', [AdminController::class, 'monitoringSistem'])
+     ->name('monitoring.sistem');
+
+    Route::get('/monitoring/keuangan', [AdminController::class, 'monitoringKeuangan'])
+     ->name('monitoring.keuangan');
+
     // Logout
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 });
