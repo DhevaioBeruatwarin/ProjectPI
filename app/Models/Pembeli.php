@@ -38,6 +38,21 @@ class Pembeli extends Authenticatable
         return $this->hasMany(Conversation::class, 'pembeli_id', 'id_pembeli');
     }
 
+    public function transaksi(): HasMany
+    {
+        return $this->hasMany(Transaksi::class, 'id_pembeli', 'id_pembeli');
+    }
+
+    public function keranjang(): HasMany
+    {
+        return $this->hasMany(Keranjang::class, 'id_pembeli', 'id_pembeli');
+    }
+
+    public function conversation(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'pembeli_id', 'id_pembeli');
+    }
+
     public function pembeliConversationsAsPembeli1(): HasMany
     {
         return $this->hasMany(PembeliConversation::class, 'pembeli1_id', 'id_pembeli');
