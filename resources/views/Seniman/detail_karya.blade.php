@@ -8,172 +8,485 @@
 </head>
 <body>
     <!-- Header -->
- <header style="background-color:#231105; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; position:sticky; top:0; z-index:1000;">
-    <div style="display:flex; align-items:center; gap:10px;">
-        <div class="logo">
-            <img src="{{ asset('assets/logo.png') }}" 
-                 alt="Jogja Artsphere Logo" 
-                 style="width:45px; height:45px; object-fit:contain;">
-        </div>
-        <div style="font-weight:bold; font-size:18px; color:#fff;">JOGJA ARTSPHERE</div>
-    </div>
-
-    <div style="flex:1; margin:0 20px;">
-         <form action="{{ route('dashboard.seniman.search') }}" method="GET" style="display:inline;">
-    <input type="text" name="query" class="search-bar" placeholder="Cari karya..." value="{{ request('query') }}">
-</form>
-    </div>
-
-    <div style="display:flex; align-items:center; gap:15px;">
-        <a href="{{ route('keranjang.index') }}" class="icon-btn">🛒</a>
-        @php
-            $pembeli = Auth::guard('pembeli')->user();
-            $fotoPath = $pembeli->foto 
-                ? asset('storage/foto_pembeli/' . $pembeli->foto)
-                : asset('assets/defaultprofile.png');
-        @endphp
-        <a href="{{ route('pembeli.profil') }}">
-            <img src="{{ $fotoPath }}" alt="Profil" 
-                 style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #ffffffff;">
-        </a>
-    </div>
-</header>
-
-
-    <!-- Main PDP -->
-    <div class="pdp-container">
-        <!-- Gambar Produk -->
-        <div class="pdp-left">
-            @if($karya->gambar)
-                <img id="mainImg" src="{{ asset('storage/karya_seni/' . $karya->gambar) }}" alt="{{ $karya->nama_karya }}">
-            @else
-                <div class="no-image">No Image Available</div>
-            @endif
-        </div>
-
-        <!-- Info Produk -->
-        <div class="pdp-right">
-            <h1>{{ $karya->nama_karya }}</h1>
-
-            <div class="rating">
-                @if($averageRating)
-                    ⭐ {{ $averageRating }} ({{ $karya->reviews->count() }} reviews)
-                @else
-                    Belum ada rating
-                @endif
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="logo">
+                <span class="brand">JOGJA ARTSPHERE</span>
             </div>
 
-            <div class="price">Rp{{ number_format($karya->harga,0,',','.') }}</div>
+            <form action="{{ route('dashboard.pembeli.search') }}" method="GET" class="search-form">
+                <input type="text" name="query" placeholder="Cari karya..." value="{{ request('query') }}">
+            </form>
 
-            <p class="author">By {{ $karya->seniman->nama ?? 'Unknown' }}</p>
-
-            <p class="description">{{ $karya->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}</p>
-
-       <div class="actions">
-    <button type="button" class="btn-cart btn btn-outline-primary" onclick="tambahKeranjang('{{ $karya->kode_seni }}', false)">
-        Tambahkan ke Keranjang
-    </button>
-
-    <button type="button" class="btn-buy btn btn-success" onclick="tambahKeranjang('{{ $karya->kode_seni }}', true)">
-        Beli Sekarang
-    </button>
-</div>
-
-<script>
-function tambahKeranjang(kodeSeni, langsungBeli) {
-    fetch(`/pembeli/keranjang/tambah/${kodeSeni}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({})
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            // Tambah animasi kecil
-            let notif = document.createElement('div');
-            notif.innerText = data.message;
-            notif.style.position = 'fixed';
-            notif.style.top = '20px';
-            notif.style.right = '25px';
-            notif.style.background = '#4CAF50';
-            notif.style.color = 'white';
-            notif.style.padding = '10px 20px';
-            notif.style.borderRadius = '10px';
-            notif.style.zIndex = '9999';
-            notif.style.opacity = '0.9';
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 2000);
-
-            // Update icon keranjang (kalau ada di navbar)
-            const cartCountEl = document.querySelector('#cart-count');
-            if (cartCountEl) cartCountEl.innerText = data.cart_count;
-
-            // Kalau langsung beli, arahkan ke halaman keranjang
-            if (langsungBeli) {
-                setTimeout(() => {
-                    window.location.href = '/pembeli/keranjang';
-                }, 800);
-            }
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(err => console.error(err));
-}
-</script>
-
-
+            <div class="header-right">
+                <a href="{{ route('keranjang.index') }}" class="icon-link" title="Keranjang">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 2L7.17 4H3a1 1 0 000 2h1l1.68 9.39A2 2 0 0011.56 17H18a2 2 0 001.97-1.61L21 8H7" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="9" cy="20" r="1" fill="currentColor"/>
+                        <circle cx="18" cy="20" r="1" fill="currentColor"/>
+                    </svg>
+                </a>
+                
+                @php
+                    $pembeli = Auth::guard('pembeli')->user();
+                    $fotoPath = $pembeli && $pembeli->foto 
+                        ? asset('storage/foto_pembeli/' . $pembeli->foto)
+                        : asset('assets/defaultprofile.png');
+                @endphp
+                
+                <a href="{{ route('pembeli.profil') }}" title="Profil">
+                    <img src="{{ $fotoPath }}" alt="Profile" class="avatar">
+                </a>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <!-- Related Products -->
-    <section class="related-products">  
-        <h2>Produk Lain dari Seniman Ini</h2>
-        <div class="grid">
-            @foreach($karyaSeniman as $item)
-                <a href="{{ route('karya.detail', $item->kode_seni) }}" class="card">
-                    @if($item->gambar)
-                        <img src="{{ asset('storage/karya_seni/' . $item->gambar) }}" alt="{{ $item->nama_karya }}">
+    <!-- Product Detail -->
+    <main class="product-detail">
+        <div class="container">
+            <div class="product-grid">
+                <!-- Image Section -->
+                <div class="product-image">
+                    @if($karya->gambar)
+                        <img src="{{ asset('storage/karya_seni/' . $karya->gambar) }}" alt="{{ $karya->nama_karya }}">
                     @else
                         <div class="no-image">No Image</div>
                     @endif
-                    <p class="title">{{ $item->nama_karya }}</p>
-                    <p class="price">Rp {{ number_format($item->harga,0,',','.') }}</p>
-                </a>
-            @endforeach
+                </div>
+
+                <!-- Info Section -->
+                <div class="product-info">
+                    <div class="product-header">
+                        <h1 class="product-title">{{ $karya->nama_karya }}</h1>
+                        <p class="product-artist">{{ $karya->seniman->nama ?? 'Unknown Artist' }}</p>
+                        
+                        <!-- Rating Summary -->
+                        @if($averageRating)
+                            <div class="rating-summary">
+                                <div class="stars">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= floor($averageRating))
+                                            <span class="star filled">★</span>
+                                        @elseif($i - 0.5 <= $averageRating)
+                                            <span class="star half">★</span>
+                                        @else
+                                            <span class="star">★</span>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <span class="rating-value">{{ $averageRating }}/5</span>
+                                <span class="rating-count">
+                                    @if($karya->reviews && $karya->reviews->count() > 0)
+                                        ({{ $karya->reviews->count() }} ulasan)
+                                    @else
+                                        (Belum ada ulasan)
+                                    @endif
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="product-price">Rp {{ number_format($karya->harga, 0, ',', '.') }}</div>
+
+                    <!-- Stats Section untuk Pembeli -->
+                    <div class="stats-section">
+                        <h3 class="stats-title">Statistik Karya</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $karya->stok }}</div>
+                                <div class="stat-label">Stok Tersedia</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">{{ $karya->terjual ?? 0 }}</div>
+                                <div class="stat-label">Terjual</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">
+                                    @if($averageRating)
+                                        {{ $averageRating }}/5
+                                    @else
+                                        -
+                                    @endif
+                                </div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Status -->
+                    <div class="stock-wrapper">
+                        @if($karya->stok <= 0)
+                            <div class="stock-badge out">
+                                <span class="dot"></span>
+                                Stok Habis
+                            </div>
+                        @elseif($karya->stok <= 5)
+                            <div class="stock-badge low">
+                                <span class="dot"></span>
+                                {{ $karya->stok }} Tersisa
+                            </div>
+                        @else
+                            <div class="stock-badge available">
+                                <span class="dot"></span>
+                                Tersedia
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Description -->
+                    <div class="product-description">
+                        <h3>Detail Produk</h3>
+                        <p>{{ $karya->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}</p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="product-actions">
+                        @if($karya->stok > 0)
+                            <button class="btn btn-primary" onclick="tambahKeranjang('{{ $karya->kode_seni }}', true)">
+                                Beli Sekarang
+                            </button>
+                            <button class="btn btn-secondary" onclick="tambahKeranjang('{{ $karya->kode_seni }}', false)">
+                                Tambah ke Keranjang
+                            </button>
+                            <a href="{{ route('pembeli.chat.start.from.karya', $karya->kode_seni) }}" class="btn btn-chat">
+                                💬 Chat {{ $karya->seniman->nama ?? 'Seniman' }}
+                            </a>
+                        @else
+                            <button class="btn btn-disabled" disabled>
+                                Stok Habis
+                            </button>
+                            <a href="{{ route('pembeli.chat.start.from.karya', $karya->kode_seni) }}" class="btn btn-chat">
+                                💬 Tanya Stok
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<!-- Bantuan & Support Section -->
+<section class="support-section">
+    <div class="container">
+        <h2 class="section-title">Bantuan & Support</h2>
+        <div class="support-grid">
+            <div class="support-card">
+                <div class="support-icon">📞</div>
+                <div class="support-content">
+                    <h3>Customer Service</h3>
+                    <p class="support-value">24/7 Support</p>
+                    <p class="support-desc">Tim kami siap membantu Anda kapan saja</p>
+                    <a href="https://wa.me/6281234567890" class="support-link" target="_blank">
+                        Chat WhatsApp
+                    </a>
+                </div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">🛠️</div>
+                <div class="support-content">
+                    <h3>Panduan Perawatan</h3>
+                    <p class="support-value">Tips Merawat Karya</p>
+                    <p class="support-desc">Jaga keindahan karya seni Anda tetap awet</p>
+                    <button class="support-link" onclick="showCareGuide()">
+                        Baca Panduan
+                    </button>
+                </div>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">❓</div>
+                <div class="support-content">
+                    <h3>FAQ</h3>
+                    <p class="support-value">Pertanyaan Umum</p>
+                    <p class="support-desc">Temukan jawaban untuk pertanyaan umum</p>
+                    <button class="support-link" onclick="showFAQ()">
+                        Lihat FAQ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Accordion -->
+        <div class="faq-accordion" id="faqAccordion" style="display: none;">
+            <h3 class="faq-title">Pertanyaan yang Sering Diajukan</h3>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Bagaimana cara merawat karya seni ini?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>• Hindari paparan sinar matahari langsung<br>
+                       • Bersihkan dengan kain lembut dan kering<br>
+                       • Jauhkan dari area lembab<br>
+                       • Simpan pada suhu ruangan</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Apakah karya ini datang dengan sertifikat keaslian?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Ya, setiap karya dilengkapi dengan sertifikat keaslian yang ditandatangani oleh seniman.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Berapa lama waktu pengiriman?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>• Yogyakarta: 1-2 hari<br>
+                       • Jabodetabek: 3-4 hari<br>
+                       • Kota besar lainnya: 4-7 hari<br>
+                       • Daerah terpencil: 7-14 hari</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Related Products -->
+    <section class="related-section">
+        <div class="container">
+            <h2 class="section-title">Karya Lainnya dari Seniman Ini</h2>
+            
+            @if($karyaSeniman->isEmpty())
+                <p class="empty-text">Tidak ada karya lain tersedia</p>
+            @else
+                <div class="product-carousel">
+                    @foreach($karyaSeniman as $item)
+                        <a href="{{ route('pembeli.karya.detail', $item->kode_seni) }}" class="card {{ $item->stok <= 0 ? 'sold-out' : '' }}">
+                            <div class="card-image">
+                                @if($item->gambar)
+                                    <img src="{{ asset('storage/karya_seni/' . $item->gambar) }}" alt="{{ $item->nama_karya }}">
+                                @else
+                                    <div class="no-image">No Image</div>
+                                @endif
+                                
+                                @if($item->stok <= 0)
+                                    <span class="overlay-badge">Stok Habis</span>
+                                @elseif($item->stok <= 5)
+                                    <span class="overlay-badge warning">Terbatas</span>
+                                @endif
+                            </div>
+                            
+                            <div class="card-content">
+                                <h3>{{ $item->nama_karya }}</h3>
+                                <p class="card-price">Rp {{ number_format($item->harga, 0, ',', '.') }}</p>
+                                <div class="card-meta">
+                                    @if($item->stok > 0)
+                                        <span class="meta-stock">{{ $item->stok }} tersedia</span>
+                                    @else
+                                        <span class="meta-stock out">Habis</span>
+                                    @endif
+                                    
+                                    @if(isset($item->terjual) && $item->terjual > 0)
+                                        <span class="meta-sold">{{ $item->terjual }} terjual</span>
+                                    @endif
+                                </div>
+
+                                <!-- Rating untuk card -->
+                                @if($item->reviews && $item->reviews->count() > 0)
+                                    @php
+                                        $itemRating = round($item->reviews->avg('nilai'), 1);
+                                    @endphp
+                                    <div class="card-rating">
+                                        <div class="stars">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <span class="star {{ $i <= floor($itemRating) ? 'filled' : '' }}">★</span>
+                                            @endfor
+                                        </div>
+                                        <span class="rating-count">({{ $item->reviews->count() }})</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <!-- Ratings & Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <div class="reviews-header">
+                <h2 class="section-title">Ulasan & Rating</h2>
+                
+                @if($averageRating)
+                    <div class="overall-rating">
+                        <div class="rating-score">
+                            <span class="score">{{ $averageRating }}</span>
+                            <span class="out-of">/5</span>
+                        </div>
+                        <div class="rating-details">
+                            <div class="stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= floor($averageRating))
+                                        <span class="star filled">★</span>
+                                    @elseif($i - 0.5 <= $averageRating)
+                                        <span class="star half">★</span>
+                                    @else
+                                        <span class="star">★</span>
+                                    @endif
+                                @endfor
+                            </div>
+                            <p class="total-reviews">
+                                Berdasarkan {{ $karya->reviews->count() }} ulasan
+                            </p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            @if($karya->reviews && $karya->reviews->count() > 0)
+                <div class="reviews-list">
+                    @foreach($karya->reviews as $review)
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar">
+                                        @if($review->pembeli && $review->pembeli->foto)
+                                            <img src="{{ asset('storage/foto_pembeli/' . $review->pembeli->foto) }}" alt="{{ $review->pembeli->nama }}">
+                                        @else
+                                            <div class="avatar-placeholder">{{ substr($review->pembeli->nama ?? 'U', 0, 1) }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="reviewer-details">
+                                        <h4 class="reviewer-name">{{ $review->pembeli->nama ?? 'Pengguna' }}</h4>
+                                        <div class="review-meta">
+                                            <div class="review-stars">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <span class="star {{ $i <= $review->nilai ? 'filled' : '' }}">★</span>
+                                                @endfor
+                                            </div>
+                                            <span class="review-date">
+                                                {{ $review->created_at->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="review-content">
+                                <p>{{ $review->komentar ?? 'Tidak ada komentar' }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="no-reviews">
+                    <div class="no-reviews-icon">⭐</div>
+                    <h3>Belum ada ulasan</h3>
+                    <p>Jadilah yang pertama memberikan ulasan untuk karya ini</p>
+                </div>
+            @endif
         </div>
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Jogja Artsphere</h3>
-                <p>Jl. Malioboro No.123, Yogyakarta 55271</p>
-                <p>Telp: (0274) 123-4567</p>
-                <p>Email: info@jogja-artsphere.com</p>
-            </div>
-            <div class="footer-section">
-                <h3>Bantuan</h3>
-                <div class="footer-links">
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Jogja Artsphere</h4>
+                    <p>Platform jual beli karya seni lokal Yogyakarta</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Kontak</h4>
+                    <p>Jl. Malioboro No.123, Yogyakarta</p>
+                    <p>Email: info@jogja-artsphere.com</p>
+                    <p>Telp: (0274) 123-4567</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Bantuan</h4>
                     <a href="#">Tentang Kami</a>
                     <a href="#">Hubungi Kami</a>
-                    <a href="#">Customer Service</a>
+                    <a href="#">FAQ</a>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p><strong>Jogja Artsphere</strong> - Satu Jika Untuk Koleksi Karya Lokal.</p>
+            <div class="footer-bottom">
+                <p>&copy; {{ date('Y') }} Jogja Artsphere. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
     <script>
-        function changeImage(thumb) {
-            document.getElementById('mainImg').src = thumb.src; 
+        function tambahKeranjang(kodeSeni, langsungBeli) {
+            fetch(`/pembeli/keranjang/tambah/${kodeSeni}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message);
+                    if (langsungBeli) {
+                        setTimeout(() => window.location.href = '/pembeli/keranjang', 800);
+                    }
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showNotification('Terjadi kesalahan', 'error');
+            });
         }
+
+        function showNotification(message, type = 'success') {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.className = 'notification show';
+            
+            if (type === 'error') {
+                notif.style.background = '#e74c3c';
+            } else {
+                notif.style.background = '#111';
+            }
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+
+
+        // Fungsi untuk FAQ Accordion
+function toggleFAQ(button) {
+    const faqItem = button.parentElement;
+    const answer = button.nextElementSibling;
+    const icon = button.querySelector('.faq-icon');
+    
+    // Toggle active class
+    faqItem.classList.toggle('active');
+    answer.classList.toggle('active');
+    
+    // Change icon
+    if (faqItem.classList.contains('active')) {
+        icon.textContent = '−';
+    } else {
+        icon.textContent = '+';
+    }
+}
+
+// Fungsi untuk menampilkan FAQ
+function showFAQ() {
+    const faqAccordion = document.getElementById('faqAccordion');
+    faqAccordion.style.display = faqAccordion.style.display === 'none' ? 'block' : 'none';
+}
+
+// Fungsi untuk menampilkan panduan perawatan
+function showCareGuide() {
+    alert('Panduan Perawatan:\n\n1. Hindari sinar matahari langsung\n2. Bersihkan dengan kain lembut\n3. Jauhkan dari kelembaban\n4. Simpan di suhu ruangan\n5. Hindari bahan kimia');
+}
     </script>
 </body>
 </html>

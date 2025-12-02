@@ -48,14 +48,14 @@
             display: inline-block;
             margin-top: 10px;
             padding: 8px 15px;
-            background-color: #7a5af5;
+            background-color: #000000;
             color: #fff;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.2s;
         }
         .btn-upload:hover {
-            background-color: #6848e6;
+            background-color: #000000;
         }
         .footer {
             background-color: #2c1e15;

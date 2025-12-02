@@ -160,8 +160,6 @@
         </form>
 
         <div class="header-right">
-            <button class="icon-btn" id="camera-btn">📷</button>
-            <a href="keranjang" class="icon-btn">🛒</a>
             @if(\Illuminate\Support\Facades\Auth::guard('pembeli')->check())
                 @php
                     $pembeli = Auth::guard('pembeli')->user();

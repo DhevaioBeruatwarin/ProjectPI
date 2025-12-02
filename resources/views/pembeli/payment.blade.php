@@ -132,6 +132,7 @@
     </style>
 </head>
 <body>
+
     <div class="payment-container">
         <div class="payment-icon">💳</div>
         <h2>Proses Pembayaran</h2>

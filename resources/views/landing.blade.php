@@ -20,7 +20,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" style="background-image: url('{{ asset('assets/bg.jpg') }}');">
         <div class="hero-content">
             <div class="text-left">
                 <h1>Discover unique artworks<br>support local artists and<br>be part of Jogja’s creative movement.</h1>
