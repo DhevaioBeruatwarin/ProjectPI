@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Models\Admin;
 use App\Models\Seniman;
 use App\Models\Pembeli;
 use App\Models\KaryaSeni;
+
 
 class AdminController extends Controller
 {
@@ -17,6 +19,57 @@ class AdminController extends Controller
     {
         return view('admin.login');
     }
+
+public function monitoringKeuangan()
+{
+    $transaksi = DB::table('transaksi')
+    ->leftJoin('pembeli', 'pembeli.id_pembeli', '=', 'transaksi.id_pembeli')
+    ->leftJoin('karya_seni', 'karya_seni.kode_seni', '=', 'transaksi.kode_seni')
+    ->leftJoin('seniman', 'seniman.id_seniman', '=', 'karya_seni.id_seniman')
+    ->select(
+        'transaksi.*',
+        'pembeli.nama as nama_pembeli',
+        'karya_seni.nama_karya',
+        'seniman.nama as nama_seniman'
+    )
+    ->orderBy('transaksi.created_at', 'desc')
+    ->get();
+
+
+
+    // Total pendapatan hanya dari transaksi berhasil
+    $totalPendapatan = DB::table('transaksi')
+        ->where('status', 'success')
+        ->sum(DB::raw('harga * jumlah'));
+
+    // Total transaksi
+    $jumlahTransaksi = DB::table('transaksi')->count();
+
+    return view('admin.monitoring_keuangan', compact(
+        'transaksi',
+        'totalPendapatan',
+        'jumlahTransaksi'
+    ));
+}
+
+
+
+
+public function monitoringSistem()
+{
+    $server = [
+        'php_version' => phpversion(),
+        'laravel_version' => app()->version(),
+        'server_os' => php_uname(),
+        'memory_usage' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB',
+        'disk_free' => round(disk_free_space("/") / 1024 / 1024 / 1024, 2) . ' GB',
+        'disk_total' => round(disk_total_space("/") / 1024 / 1024 / 1024, 2) . ' GB',
+        'server_time' => now()->format('d-m-Y H:i:s'),
+    ];
+
+    return view('admin.monitoring_sistem', compact('server'));
+}
+
 
     public function login(Request $request)
     {
