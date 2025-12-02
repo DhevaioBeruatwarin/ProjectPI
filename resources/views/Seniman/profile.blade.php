@@ -135,10 +135,6 @@
                                 <div class="detail-item"><div class="detail-label"><i class="fas fa-palette me-1"></i>Bidang Seni</div><div class="detail-value">{{ $seniman->bidang ?? 'Tidak diatur' }}</div></div>
                                 <div class="detail-item"><div class="detail-label"><i class="fas fa-calendar-alt me-1"></i>Bergabung</div><div class="detail-value">{{ \Carbon\Carbon::parse($seniman->created_at)->format('d M Y') }}</div></div>
                             </div>
-                            <div class="action-buttons">
-                                <a href="{{ route('seniman.edit.profil') }}" class="action-btn action-btn-primary"><i class="fas fa-edit"></i>Edit Profil</a>
-                                <a href="{{ route('seniman.karya.index') }}" class="action-btn action-btn-secondary"><i class="fas fa-palette"></i>Lihat Karya</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -171,15 +167,6 @@
                     @else
                         <div class="empty-state"><div class="empty-state-icon"><i class="fas fa-inbox"></i></div><p>Belum ada karya. Mulai upload karya seni terbaik Anda!</p></div>
                     @endif
-                </div>
-
-                <div class="content-section">
-                    <h3 class="section-title"><i class="fas fa-link me-2"></i>Akses Cepat</h3>
-                    <div class="quick-links-grid">
-                        <a href="{{ route('seniman.karya.upload') }}" class="quick-link-card card-brown"><i class="fas fa-cloud-upload-alt"></i>Upload Karya</a>
-                        <a href="{{ route('seniman.chat.index') }}" class="quick-link-card card-brown"><i class="fas fa-comments"></i>Chat Pembeli</a>
-                    </div>
-                </div>
                 </div>
 
                 <footer class="footer" style="background: #1a1a1a; color: #fff; padding: 40px 0; margin-top: 60px; border-top: 1px solid #333; width: 100%;">

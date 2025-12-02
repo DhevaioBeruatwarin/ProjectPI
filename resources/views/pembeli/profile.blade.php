@@ -566,15 +566,6 @@
                                 <div class="detail-value">{{ \Carbon\Carbon::parse($pembeli->created_at)->format('d M Y') }}</div>
                             </div>
                         </div>
-
-                        <div class="action-buttons">
-                            <a href="{{ route('pembeli.profil.edit') }}" class="action-btn action-btn-primary">
-                                <i class="fas fa-edit"></i>Edit Profil
-                            </a>
-                            <a href="{{ route('pembeli.chat.index') }}" class="action-btn action-btn-secondary">
-                                <i class="fas fa-comments"></i>Chat Seniman
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -661,24 +652,6 @@
                         <p>Belum ada aktivitas. Mulai berbelanja karya seni terbaik dari seniman lokal!</p>
                     </div>
                 @endif
-            </div>
-
-            <!-- Quick Links Section -->
-            <div class="content-section">
-                <h3 class="section-title">
-                    <i class="fas fa-link me-2"></i>Akses Cepat
-                </h3>
-                <div class="quick-links-grid">
-                    <a href="{{ route('pembeli.myorder') }}" class="quick-link-card card-brown">
-                        <i class="fas fa-shopping-bag"></i>
-                        Lihat Pesanan
-                    </a>
-                    <a href="{{ route('pembeli.chat.index') }}" class="quick-link-card card-brown">
-                        <i class="fas fa-comments"></i>
-                        Chat Seniman
-                    </a>
-                </div>
-            </div>
             </div>
 
             <!-- Footer -->

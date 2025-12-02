@@ -149,6 +149,11 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
                 <textarea name="alamat" class="input-field">{{ old('alamat', $pembeli->alamat) }}</textarea>
             </div>
 
+            <div class="field-row">
+                <label class="field-label">Bio / Tentang Saya</label>
+                <textarea name="bio" class="input-field" placeholder="Ceritakan tentang diri Anda...">{{ old('bio', $pembeli->bio) }}</textarea>
+            </div>
+
             <div class="button-group">
                 <a href="{{ route('pembeli.profil') }}" class="btn btn-outline">Batal</a>
                 <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
