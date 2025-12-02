@@ -60,6 +60,11 @@
                 <textarea name="bio" class="input-field">{{ old('bio', $seniman->bio) }}</textarea>
             </div>
 
+            <div class="field-row">
+                <label class="field-label">Alamat</label>
+                <textarea name="alamat" class="input-field">{{ old('alamat', $seniman->alamat) }}</textarea>
+            </div>
+
 
             <div class="button-group">
                 <a href="{{ route('seniman.profil') }}" class="btn btn-outline">Batal</a>
