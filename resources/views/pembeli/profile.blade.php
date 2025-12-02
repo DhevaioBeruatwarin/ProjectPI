@@ -413,14 +413,15 @@
 </head>
 <body>
     <!-- Header/Navbar -->
+    @if(\Illuminate\Support\Facades\Auth::guard('seniman')->check())
     <header class="header">
         <div class="container nav-container">
             <div class="header-left">
-                <a href="{{ route('pembeli.dashboard') }}" class="logo-link">
+                <a href="{{ route('seniman.dashboard') }}" class="logo-link">
                     <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="logo">
                 </a>
                 <span class="brand">JOGJA ARTSPHERE</span>
-                <a href="{{ route('pembeli.dashboard') }}" style="text-decoration: none; color: #fff; margin-left: 20px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                <a href="{{ route('seniman.dashboard') }}" style="text-decoration: none; color: #fff; margin-left: 20px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali ke Home</span>
                 </a>
@@ -439,18 +440,19 @@
                     </svg>
                 </a>
 
-                @if(\Illuminate\Support\Facades\Auth::guard('pembeli')->check())
+                @if(\Illuminate\Support\Facades\Auth::guard('seniman')->check())
                     @php
-                        $pembeli = Auth::guard('pembeli')->user();
-                        $fotoPath = $pembeli->foto ? asset('storage/foto_pembeli/' . $pembeli->foto) : asset('assets/defaultprofile.png');
+                        $seniman = Auth::guard('seniman')->user();
+                        $fotoPath = $seniman->foto ? asset('storage/foto_seniman/' . $seniman->foto) : asset('assets/defaultprofile.png');
                     @endphp
-                    <a href="{{ route('pembeli.profil') }}" class="profile-link" title="Profil">
+                    <a href="{{ route('seniman.profil') }}" class="profile-link" title="Profil">
                         <img src="{{ $fotoPath }}" alt="Foto Profil" class="avatar">
                     </a>
                 @endif
             </div>
         </div>
     </header>
+    @endif
     
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
@@ -579,6 +581,7 @@
 
             <!-- Statistics Section -->
             <div class="stats-grid">
+                @if(\Illuminate\Support\Facades\Auth::guard('seniman')->check())
                 <div class="stat-card">
                     <div class="stat-icon">
                         <i class="fas fa-shopping-bag"></i>
@@ -586,6 +589,7 @@
                     <div class="stat-number">{{ $pembeli->transaksi()->count() ?? 0 }}</div>
                     <div class="stat-label">Total Pesanan</div>
                 </div>
+                @endif
                 <div class="stat-card">
                     <div class="stat-icon">
                         <i class="fas fa-heart"></i>
@@ -600,14 +604,11 @@
                     <div class="stat-number">{{ $pembeli->conversation()->count() ?? 0 }}</div>
                     <div class="stat-label">Percakapan Aktif</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="stat-number">5.0</div>
-                    <div class="stat-label">Rating Rata-rata</div>
-                </div>
+                @if(\Illuminate\Support\Facades\Auth::guard('seniman')->check())
             </div>
+            @else
+            </div>
+            @endif
 
             <!-- Bio Section -->
             <div class="content-section">
