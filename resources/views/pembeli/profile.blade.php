@@ -51,7 +51,7 @@
                 <li><a href="{{ route('pembeli.profil') }}" class="active">Profile</a></li>
                 <li><a href="{{ route('pembeli.myorder') }}">My Order</a></li>
                 <li><a href="{{ route('pembeli.chat.index') }}">Chat dengan Seniman</a></li>
-                <li><a href="{{ route('pembeli.chat.pembeli.index') }}">Chat dengan Pembeli</a></li>
+                {{-- <li><a href="{{ route('pembeli.chat.pembeli.index') }}">Chat dengan Pembeli</a></li> --}}
                 <li><a href="{{ route('pembeli.profil.edit') }}">Edit Profile</a></li>
                 <li><a href="{{ route('pembeli.logout') }}">Logout</a></li>
             </ul>

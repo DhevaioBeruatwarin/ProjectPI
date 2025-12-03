@@ -243,6 +243,18 @@
                 </div>
             </a>
 
+            <a href="{{ route('admin.monitoring.sistem') }}" class="product-card" style="text-decoration:none; color:inherit;">
+                <div class="product-image" style="background:#60a5fa;">
+                    <strong>Monitoring Sistem</strong>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.monitoring.keuangan') }}" class="product-card" style="text-decoration:none; color:inherit;">
+                <div class="product-image" style="background:#a78bfa;">
+                    <strong>Monitoring Keuangan</strong>
+                </div>
+            </a>
+
         </div>
     </div>
 

@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\QuickReply;
 
 class ChatController extends Controller
 {
@@ -57,21 +58,34 @@ class ChatController extends Controller
         // Tampilkan semua seniman untuk chat (tidak perlu checkout dulu)
         $senimanList = Seniman::orderBy('nama')->get(['id_seniman', 'nama']);
 
-        return view('chat.index', [
+        // Ambil quick replies default/aktif untuk pembeli (user_id null = global)
+        $quickReplies = QuickReply::where('user_type', 'pembeli')
+            ->where(function ($q) {
+                $q->whereNull('user_id');
+            })
+            ->where('is_active', true)
+            ->orderBy('category')
+            ->get();
+
+        // Foto path untuk navbar (mengikuti pola pada view lain)
+        $fotoPath = null;
+        if (Auth::guard('pembeli')->check()) {
+            $pembeliUser = Auth::guard('pembeli')->user();
+            $fotoPath = $pembeliUser->foto ? asset('storage/foto_pembeli/' . $pembeliUser->foto) : asset('assets/defaultprofile.png');
+        }
+
+        return view('chat.pembeli-chat', [
             'userType' => 'pembeli',
             'conversations' => $conversations,
             'activeConversation' => $activeConversation,
             'messages' => $messages,
             'counterparts' => $senimanList,
-            'counterpartLabel' => 'Seniman',
-            'routeConfig' => [
-                'index' => 'pembeli.chat.index',
-                'start' => 'pembeli.chat.start',
-            ],
+            'quickReplies' => $quickReplies,
             'endpoints' => [
                 'messages' => $activeConversation ? route('pembeli.chat.messages', $activeConversation) : null,
                 'send' => $activeConversation ? route('pembeli.chat.send', $activeConversation) : null,
             ],
+            'fotoPath' => $fotoPath,
         ]);
     }
 
