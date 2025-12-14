@@ -487,6 +487,262 @@ function showFAQ() {
 function showCareGuide() {
     alert('Panduan Perawatan:\n\n1. Hindari sinar matahari langsung\n2. Bersihkan dengan kain lembut\n3. Jauhkan dari kelembaban\n4. Simpan di suhu ruangan\n5. Hindari bahan kimia');
 }
+
+// Review System JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewCheck = document.getElementById('reviewCheck');
+    const existingReview = document.getElementById('existingReview');
+    const cancelEditBtn = document.getElementById('cancelEdit');
+    const editReviewBtn = document.getElementById('editReviewBtn');
+    const deleteReviewBtn = document.getElementById('deleteReviewBtn');
+    const userRatingStars = document.getElementById('userRatingStars');
+    const userReviewText = document.getElementById('userReviewText');
+    
+    const kodeSeni = "{{ $karya->kode_seni }}";
+    
+    // Check if user has already reviewed
+    checkUserReview();
+    
+    // Star rating interaction
+    const starsInput = document.querySelectorAll('.stars-input input');
+    const starsLabels = document.querySelectorAll('.stars-input label');
+    
+    starsLabels.forEach(label => {
+        label.addEventListener('mouseover', function() {
+            const value = this.getAttribute('for').replace('star', '');
+            highlightStars(value);
+        });
+        
+        label.addEventListener('mouseout', function() {
+            const checked = document.querySelector('.stars-input input:checked');
+            if (checked) {
+                highlightStars(checked.value);
+            } else {
+                resetStars();
+            }
+        });
+    });
+    
+    starsInput.forEach(input => {
+        input.addEventListener('change', function() {
+            highlightStars(this.value);
+        });
+    });
+    
+    // Submit review form
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            fetch(`/pembeli/karya/${kodeSeni}/review`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    showNotification('Review berhasil ditambahkan!');
+                    resetReviewForm();
+                    checkUserReview();
+                    // Refresh reviews section
+                    loadReviews();
+                } else {
+                    showNotification(response.message || 'Terjadi kesalahan', 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showNotification('Terjadi kesalahan', 'error');
+            });
+        });
+    }
+    
+    // Edit review
+    if (editReviewBtn) {
+        editReviewBtn.addEventListener('click', function() {
+            fetch(`/pembeli/karya/${kodeSeni}/check-review`)
+                .then(res => res.json())
+                .then(response => {
+                    if (response.has_reviewed && response.review) {
+                        const review = response.review;
+                        
+                        // Fill form with existing review
+                        document.querySelector(`#star${review.nilai}`).checked = true;
+                        document.getElementById('komentar').value = review.komentar;
+                        highlightStars(review.nilai);
+                        
+                        // Show form, hide existing review
+                        reviewForm.style.display = 'block';
+                        existingReview.style.display = 'none';
+                        cancelEditBtn.style.display = 'inline-block';
+                        
+                        // Change form to update mode
+                        reviewForm.dataset.mode = 'update';
+                        reviewForm.dataset.reviewId = review.id_review;
+                        
+                        const submitBtn = reviewForm.querySelector('button[type="submit"]');
+                        submitBtn.textContent = 'Update Review';
+                    }
+                });
+        });
+    }
+    
+    // Cancel edit
+    if (cancelEditBtn) {
+        cancelEditBtn.addEventListener('click', function() {
+            resetReviewForm();
+            existingReview.style.display = 'block';
+            reviewForm.style.display = 'block';
+            this.style.display = 'none';
+        });
+    }
+    
+    // Delete review
+    if (deleteReviewBtn) {
+        deleteReviewBtn.addEventListener('click', function() {
+            if (confirm('Apakah Anda yakin ingin menghapus review ini?')) {
+                fetch(`/pembeli/karya/${kodeSeni}/check-review`)
+                    .then(res => res.json())
+                    .then(response => {
+                        if (response.has_reviewed && response.review) {
+                            const reviewId = response.review.id_review;
+                            
+                            fetch(`/pembeli/review/${reviewId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result.success) {
+                                    showNotification('Review berhasil dihapus!');
+                                    resetReviewForm();
+                                    checkUserReview();
+                                    loadReviews();
+                                }
+                            });
+                        }
+                    });
+            }
+        });
+    }
+    
+    // Helper functions
+    function checkUserReview() {
+        fetch(`/pembeli/karya/${kodeSeni}/check-review`)
+            .then(res => res.json())
+            .then(response => {
+                if (response.has_reviewed && response.review) {
+                    // User has reviewed
+                    const review = response.review;
+                    
+                    // Display existing review
+                    userRatingStars.innerHTML = '★'.repeat(review.nilai);
+                    userReviewText.textContent = review.komentar;
+                    
+                    existingReview.style.display = 'block';
+                    reviewForm.style.display = 'none';
+                } else {
+                    // User hasn't reviewed
+                    existingReview.style.display = 'none';
+                    reviewForm.style.display = 'block';
+                }
+            });
+    }
+    
+    function highlightStars(value) {
+        starsLabels.forEach(label => {
+            const starValue = label.getAttribute('for').replace('star', '');
+            if (starValue <= value) {
+                label.style.color = '#ffc107';
+            } else {
+                label.style.color = '#ddd';
+            }
+        });
+    }
+    
+    function resetStars() {
+        starsLabels.forEach(label => {
+            label.style.color = '#ddd';
+        });
+    }
+    
+    function resetReviewForm() {
+        reviewForm.reset();
+        resetStars();
+        
+        if (reviewForm.dataset.mode === 'update') {
+            delete reviewForm.dataset.mode;
+            delete reviewForm.dataset.reviewId;
+            
+            const submitBtn = reviewForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Kirim Ulasan';
+        }
+        
+        cancelEditBtn.style.display = 'none';
+    }
+    
+    function loadReviews() {
+        // Reload the reviews section
+        fetch(`/pembeli/karya/${kodeSeni}/reviews`)
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    // Update reviews list
+                    updateReviewsList(response.reviews);
+                    
+                    // Update average rating
+                    if (response.average_rating) {
+                        updateAverageRating(response.average_rating);
+                    }
+                }
+            });
+    }
+    
+    function updateReviewsList(reviews) {
+        // Implement update logic for reviews list
+        console.log('Reviews updated:', reviews);
+    }
+    
+    function updateAverageRating(rating) {
+        // Update average rating display
+        const ratingElements = document.querySelectorAll('.average-rating-value');
+        ratingElements.forEach(el => {
+            el.textContent = rating.toFixed(1);
+        });
+    }
+    
+    function showNotification(message, type = 'success') {
+        // Use existing notification system
+        const notif = document.getElementById('notification');
+        if (notif) {
+            notif.textContent = message;
+            notif.className = 'notification show';
+            
+            if (type === 'error') {
+                notif.style.background = '#e74c3c';
+            } else {
+                notif.style.background = '#111';
+            }
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        } else {
+            alert(message);
+        }
+    }
+});
+
     </script>
 </body>
 </html>

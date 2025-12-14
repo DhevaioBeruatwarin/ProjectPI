@@ -34,4 +34,9 @@ class KaryaSeni extends Model
     {
         return $this->hasMany(Review::class, 'kode_seni', 'kode_seni');
     }
+
+    public function averageRating()
+    {
+        return $this->reviews()->avg('nilai');
+    }
 }
