@@ -9,15 +9,29 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['karya_id', 'pembeli_id', 'rating', 'komentar'];
+    protected $table = 'reviews';
+    protected $primaryKey = 'id_review';
+    protected $fillable = ['kode_seni', 'id_user', 'nilai', 'komentar'];
 
+    // Tentukan jika ini incrementing
+    public $incrementing = true;
+    public $timestamps = true;
+
+    // Relasi ke KaryaSeni
     public function karya()
     {
-        return $this->belongsTo(KaryaSeni::class, 'karya_id');
+        return $this->belongsTo(KaryaSeni::class, 'kode_seni', 'kode_seni');
     }
 
+    // Relasi ke Pembeli (mengacu pada id_pembeli)
     public function pembeli()
     {
-        return $this->belongsTo(Pembeli::class, 'pembeli_id');
+        return $this->belongsTo(Pembeli::class, 'id_user', 'id_pembeli');
+    }
+
+    // Untuk backward compatibility dengan relasi user
+    public function user()
+    {
+        return $this->belongsTo(Pembeli::class, 'id_user', 'id_pembeli');
     }
 }

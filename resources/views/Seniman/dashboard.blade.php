@@ -23,7 +23,7 @@
                 <span class="brand">JOGJA ARTSPHERE</span>
             </div>
 
-            <form action="{{ route('dashboard.pembeli.search') }}" method="GET" class="search-form" role="search" aria-label="Search karya seni">
+            <form action="{{ route('dashboard.seniman.search') }}" method="GET" class="search-form" role="search" aria-label="Search karya seni">
                 <input type="search" name="query" placeholder="Cari karya seni..." value="{{ request('query') }}" aria-label="Cari karya seni">
             </form>
 
@@ -57,7 +57,7 @@
         </div>
     </section>
 
-    <!-- PRODUCTS -->
+    <!-- PRODUCTS - GRID LAYOUT (NO CAROUSEL) -->
     <main class="products-section">
         <div class="container">
             <div class="section-header">
@@ -69,46 +69,44 @@
                     <p>Belum ada karya seni tersedia</p>
                 </div>
             @else
-                <div class="carousel-wrapper">
-                    <button class="carousel-btn prev" onclick="scrollCarousel(-1)" aria-label="Previous">‹</button>
+                <!-- HAPUS CAROUSEL, GUNAKAN GRID -->
+                <div class="products-grid">
+                    @foreach($karyaSeni as $item)
+                        <a href="{{ route('seniman.karya.detail', $item->kode_seni) }}" class="product-card {{ $item->stok <= 0 ? 'sold-out' : '' }}">
+                            <div class="card-image">
+                                @if($item->gambar)
+                                    <img src="{{ asset('storage/karya_seni/' . $item->gambar) }}" alt="{{ $item->nama_karya }}">
+                                @else
+                                    <div class="no-image">No Image</div>
+                                @endif
 
-                    <div class="carousel" id="productCarousel" role="list">
-                        @foreach($karyaSeni as $item)
-                            <a href="{{ route('seniman.karya.detail', $item->kode_seni) }}" class="product-card {{ $item->stok <= 0 ? 'sold-out' : '' }}" role="listitem">
-                                <div class="card-image">
-                                    @if($item->gambar)
-                                        <img src="{{ asset('storage/karya_seni/' . $item->gambar) }}" alt="{{ $item->nama_karya }}">
-                                    @else
-                                        <div class="no-image">No Image</div>
-                                    @endif
+                                @if($item->stok <= 0)
+                                    <span class="badge sold">Sold Out</span>
+                                @elseif($item->stok <= 5)
+                                    <span class="badge limited">Low Stock</span>
+                                @endif
+                            </div>
 
-                                    @if($item->stok <= 0)
-                                        <span class="badge sold">Sold Out</span>
-                                    @elseif($item->stok <= 5)
-                                        <span class="badge limited">Low Stock</span>
+                            <div class="card-content">
+                                <h3 class="card-title">{{ $item->nama_karya }}</h3>
+                                <p class="artist">{{ $item->seniman->nama ?? 'Seniman' }}</p>
+                                <p class="price">Rp{{ number_format($item->harga, 0, ',', '.') }}</p>
+
+                                <div class="card-meta">
+                                    <span class="stock{{ $item->stok <= 0 ? ' out' : '' }}">
+                                        {{ $item->stok > 0 ? $item->stok . ' tersedia' : 'Stok Habis' }}
+                                    </span>
+                                    @if(isset($item->terjual) && $item->terjual > 0)
+                                        <span class="sold-count">{{ $item->terjual }} terjual</span>
                                     @endif
                                 </div>
-
-                                <div class="card-content">
-                                    <h3 class="card-title">{{ $item->nama_karya }}</h3>
-                                    <p class="artist">{{ $item->seniman->nama ?? 'Seniman' }}</p>
-                                    <p class="price">Rp{{ number_format($item->harga, 0, ',', '.') }}</p>
-
-                                    <div class="card-meta">
-                                        <span class="stock{{ $item->stok <= 0 ? ' out' : '' }}">{{ $item->stok > 0 ? $item->stok . ' tersedia' : 'Stok Habis' }}</span>
-                                        @if(isset($item->terjual) && $item->terjual > 0)
-                                            <span class="sold-count">{{ $item->terjual }} terjual</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-
-                    <button class="carousel-btn next" onclick="scrollCarousel(1)" aria-label="Next">›</button>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
-
-                <div class="carousel-indicators" id="indicators" aria-hidden="true"></div>
+                <!-- END GRID -->
+                
+                <!-- HAPUS CAROUSEL INDICATORS -->
             @endif
         </div>
     </main>
@@ -140,7 +138,6 @@
         </div>
     </footer>
 
-    <!-- Carousel controller (external) -->
-    <script src="{{ asset('js/carousel-fix.js') }}"></script>
+    <!-- HAPUS CAROUSEL SCRIPT (tidak diperlukan) -->
 </body>
 </html>

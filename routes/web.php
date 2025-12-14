@@ -11,6 +11,7 @@ use App\Http\Controllers\SenimanController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ReviewController;
 
 // LANDING PAGE
 Route::get('/', function () {
@@ -88,6 +89,15 @@ Route::prefix('pembeli')
         Route::post('/chat/pembeli/start', [ChatController::class, 'pembeliToPembeliStart'])->name('pembeli.chat.pembeli.start');
         Route::get('/chat/pembeli/{conversation}/messages', [ChatController::class, 'pembeliToPembeliMessages'])->name('pembeli.chat.pembeli.messages');
         Route::post('/chat/pembeli/{conversation}/messages', [ChatController::class, 'pembeliToPembeliSend'])->name('pembeli.chat.pembeli.send');
+
+        // Di dalam grup Route::prefix('pembeli')->middleware('auth:pembeli')
+    
+        // Reviews Routes
+        Route::post('/karya/{kode_seni}/review', [ReviewController::class, 'store'])->name('pembeli.review.store');
+        Route::put('/review/{id_review}', [ReviewController::class, 'update'])->name('pembeli.review.update');
+        Route::delete('/review/{id_review}', [ReviewController::class, 'destroy'])->name('pembeli.review.delete');
+        Route::get('/karya/{kode_seni}/reviews', [ReviewController::class, 'getReviews'])->name('pembeli.review.get');
+        Route::get('/karya/{kode_seni}/check-review', [ReviewController::class, 'checkUserReview'])->name('pembeli.review.check');
 
         // Logout
         Route::get('/logout', function () {

@@ -236,32 +236,6 @@
             color: white;
         }
 
-        /* Review Action Button */
-        .review-action {
-            margin-top: 10px;
-            text-align: right;
-        }
-
-        .btn-review {
-            background: #111;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-
-        .btn-review:hover {
-            background: #000;
-        }
-
-        .review-star-filled {
-            color: #ffc107;
-            margin-right: 5px;
-        }
-
         /* Notification */
         .notification {
             position: fixed;
@@ -359,7 +333,7 @@
                             <div class="product-item">
                                 <img 
                                     src="{{ asset('storage/karya_seni/' . $item->karya->gambar) }}" 
-                                    alt="{{ $item->karya->nama_karya }}"
+                                    alt="{{ $item->karya->judul }}"
                                     class="product-image"
                                     onerror="this.src='https://via.placeholder.com/80x80/667eea/ffffff?text=No+Image'"
                                 />
@@ -383,13 +357,11 @@
                                         @endphp
                                         
                                         @if($existingReview)
-                                            <button class="btn btn-primary btn-sm" 
-                                                    onclick="viewExistingReview('{{ $kode_seni }}', {{ $existingReview->id_review }})">
-                                                <span class="review-star-filled">★</span> Lihat Ulasan
+                                            <button class="btn-review" onclick="viewExistingReview('{{ $kode_seni }}', {{ $existingReview->id_review }})">
+                                                <span class="review-star-filled">★</span> Lihat Ulasan Anda
                                             </button>
                                         @else
-                                            <button class="btn btn-primary btn-sm" 
-                                                    onclick="openReviewModal('{{ $kode_seni }}', '{{ addslashes($item->karya->nama_karya) }}', '{{ asset('storage/karya_seni/' . $item->karya->gambar) }}')">
+                                            <button class="btn-review" onclick="openReviewModal('{{ $kode_seni }}', '{{ $item->karya->nama_karya }}', '{{ asset('storage/karya_seni/' . $item->karya->gambar) }}')">
                                                 ⭐ Beri Ulasan
                                             </button>
                                         @endif
@@ -847,13 +819,11 @@
             const reviewButtons = document.querySelectorAll(`.review-action button[onclick*="${kode_seni}"]`);
             reviewButtons.forEach(button => {
                 if (reviewId) {
-                    button.innerHTML = '<span class="review-star-filled">★</span> Lihat Ulasan';
+                    button.innerHTML = '<span class="review-star-filled">★</span> Lihat Ulasan Anda';
                     button.setAttribute('onclick', `viewExistingReview('${kode_seni}', ${reviewId})`);
                 } else {
-                    const productName = button.getAttribute('onclick').match(/'([^']+)'/)[1] || '...';
-                    const productImage = button.getAttribute('onclick').match(/'([^']+)'/)[2] || '...';
                     button.innerHTML = '⭐ Beri Ulasan';
-                    button.setAttribute('onclick', `openReviewModal('${kode_seni}', '${productName}', '${productImage}')`);
+                    button.setAttribute('onclick', `openReviewModal('${kode_seni}', '...', '...')`);
                 }
             });
         }
