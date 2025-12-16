@@ -20,29 +20,34 @@ class AdminController extends Controller
         return view('admin.login');
     }
 
-public function monitoringKeuangan()
+public function monitoringKeuangan(Request $request)
 {
-    $transaksi = DB::table('transaksi')
-    ->leftJoin('pembeli', 'pembeli.id_pembeli', '=', 'transaksi.id_pembeli')
-    ->leftJoin('karya_seni', 'karya_seni.kode_seni', '=', 'transaksi.kode_seni')
-    ->leftJoin('seniman', 'seniman.id_seniman', '=', 'karya_seni.id_seniman')
-    ->select(
-        'transaksi.*',
-        'pembeli.nama as nama_pembeli',
-        'karya_seni.nama_karya',
-        'seniman.nama as nama_seniman'
-    )
-    ->orderBy('transaksi.created_at', 'desc')
-    ->get();
+    $query = DB::table('transaksi')
+        ->leftJoin('pembeli', 'pembeli.id_pembeli', '=', 'transaksi.id_pembeli')
+        ->leftJoin('karya_seni', 'karya_seni.kode_seni', '=', 'transaksi.kode_seni')
+        ->leftJoin('seniman', 'seniman.id_seniman', '=', 'karya_seni.id_seniman')
+        ->select(
+            'transaksi.*',
+            'pembeli.nama as nama_pembeli',
+            'karya_seni.nama_karya',
+            'seniman.nama as nama_seniman'
+        );
 
+    // 🔥 TAMBAHAN FILTER STATUS (TIDAK MERUSAK QUERY)
+    if ($request->filled('status')) {
+        $query->where('transaksi.status', $request->status);
+    }
 
+    $transaksi = $query
+        ->orderBy('transaksi.created_at', 'desc')
+        ->get();
 
-    // Total pendapatan hanya dari transaksi berhasil
+    // Total pendapatan hanya dari transaksi sukses (SUDAH BENAR)
     $totalPendapatan = DB::table('transaksi')
         ->where('status', 'success')
         ->sum(DB::raw('harga * jumlah'));
 
-    // Total transaksi
+    // Jumlah transaksi (boleh semua)
     $jumlahTransaksi = DB::table('transaksi')->count();
 
     return view('admin.monitoring_keuangan', compact(
@@ -51,6 +56,7 @@ public function monitoringKeuangan()
         'jumlahTransaksi'
     ));
 }
+
 
 
 
