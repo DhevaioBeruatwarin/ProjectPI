@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
     background: #fff;
     color: #111;
     line-height: 1.6;
@@ -232,8 +232,13 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .sold-badge {
@@ -829,16 +834,16 @@ body {
         flex-direction: column;
         gap: 24px;
     }
-    
+
     .overall-rating {
         width: 100%;
         justify-content: center;
     }
-    
+
     .rating-score .score {
         font-size: 36px;
     }
-    
+
     .rating-details .stars .star {
         font-size: 18px;
     }
@@ -848,13 +853,13 @@ body {
     .review-item {
         padding: 16px;
     }
-    
+
     .reviewer-info {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
-    
+
     .review-meta {
         flex-direction: column;
         align-items: flex-start;
@@ -1023,17 +1028,17 @@ body {
     .support-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .support-card {
         flex-direction: column;
         text-align: center;
         padding: 24px;
     }
-    
+
     .support-icon {
         margin-bottom: 12px;
     }
-    
+
     .faq-accordion {
         padding: 24px;
     }
@@ -1043,7 +1048,7 @@ body {
     .support-card {
         padding: 20px;
     }
-    
+
     .faq-accordion {
         padding: 20px;
     }
@@ -1122,8 +1127,80 @@ body {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .stat-value {
         font-size: 20px;
     }
+}
+
+/* Response untuk pembeli */
+.seller-response.buyer-view {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    border-left: 4px solid #3498db;
+}
+
+.seller-response.buyer-view .seller-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.seller-response.buyer-view .seller-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.seller-response.buyer-view .seller-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.seller-response.buyer-view .seller-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.seller-response.buyer-view .seller-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-response.buyer-view .seller-details strong {
+    font-size: 13px;
+    color: #333;
+}
+
+.seller-response.buyer-view .response-date {
+    font-size: 11px;
+    color: #666;
+}
+
+.seller-response.buyer-view .response-content {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 10px;
+}
+
+.responses-count {
+    background: #e8f4fd;
+    color: #3498db;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-left: 5px;
 }

@@ -12,7 +12,18 @@ class KaryaSeniController extends Controller
     public function showForPembeli($kode_seni)
     {
         // Hanya untuk pembeli
-        $karya = KaryaSeni::with('seniman')->where('kode_seni', $kode_seni)->firstOrFail();
+        $karya = KaryaSeni::with([
+                'seniman',
+                'reviews' => function ($query) {
+                    $query->with([
+                            'pembeli',
+                            'responses.seniman',
+                        ])
+                        ->orderBy('created_at', 'desc');
+                },
+            ])
+            ->where('kode_seni', $kode_seni)
+            ->firstOrFail();
 
         $averageRating = null;
         if ($karya->reviews && $karya->reviews->count() > 0) {
@@ -36,7 +47,19 @@ class KaryaSeniController extends Controller
     public function showForSeniman($kode_seni)
     {
         // Hanya untuk seniman
-        $karya = KaryaSeni::with('seniman')->where('kode_seni', $kode_seni)->firstOrFail();
+        $karya = KaryaSeni::with([
+                'seniman',
+                'reviews' => function ($query) {
+                    $query->with([
+                            'pembeli',
+                            'responses.seniman',
+                        ])
+                        ->withCount('responses')
+                        ->orderBy('created_at', 'desc');
+                },
+            ])
+            ->where('kode_seni', $kode_seni)
+            ->firstOrFail();
 
         $averageRating = null;
         if ($karya->reviews && $karya->reviews->count() > 0) {

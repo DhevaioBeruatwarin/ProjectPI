@@ -6,6 +6,80 @@
     <title>{{ $karya->nama_karya }} - Jogja Artsphere</title>
     <link rel="stylesheet" href="{{ asset('css/Seniman/detail_karya.css') }}">
 </head>
+
+<style>
+    /* Response untuk pembeli */
+.seller-response.buyer-view {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    border-left: 4px solid #3498db;
+}
+
+.seller-response.buyer-view .seller-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.seller-response.buyer-view .seller-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.seller-response.buyer-view .seller-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.seller-response.buyer-view .seller-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.seller-response.buyer-view .seller-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-response.buyer-view .seller-details strong {
+    font-size: 13px;
+    color: #333;
+}
+
+.seller-response.buyer-view .response-date {
+    font-size: 11px;
+    color: #666;
+}
+
+.seller-response.buyer-view .response-content {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 10px;
+}
+
+.responses-count {
+    background: #e8f4fd;
+    color: #3498db;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-left: 5px;
+}
+</style>
 <body>
     <!-- Header -->
     <header class="header">
@@ -308,82 +382,132 @@
         </div>
     </section>
 
-    <!-- Ratings & Reviews Section -->
-    <section class="reviews-section">
-        <div class="container">
-            <div class="reviews-header">
-                <h2 class="section-title">Ulasan & Rating</h2>
-                
-                @if($averageRating)
-                    <div class="overall-rating">
-                        <div class="rating-score">
-                            <span class="score">{{ $averageRating }}</span>
-                            <span class="out-of">/5</span>
-                        </div>
-                        <div class="rating-details">
-                            <div class="stars">
-                                @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= floor($averageRating))
-                                        <span class="star filled">★</span>
-                                    @elseif($i - 0.5 <= $averageRating)
-                                        <span class="star half">★</span>
-                                    @else
-                                        <span class="star">★</span>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="total-reviews">
-                                Berdasarkan {{ $karya->reviews->count() }} ulasan
-                            </p>
-                        </div>
+<!-- Ratings & Reviews Section -->
+<section class="reviews-section">
+    <div class="container">
+        <div class="reviews-header">
+            <h2 class="section-title">Ulasan & Rating</h2>
+            
+            @if($averageRating)
+                <div class="overall-rating">
+                    <div class="rating-score">
+                        <span class="score">{{ $averageRating }}</span>
+                        <span class="out-of">/5</span>
                     </div>
-                @endif
-            </div>
-
-            @if($karya->reviews && $karya->reviews->count() > 0)
-                <div class="reviews-list">
-                    @foreach($karya->reviews as $review)
-                        <div class="review-item">
-                            <div class="review-header">
-                                <div class="reviewer-info">
-                                    <div class="reviewer-avatar">
-                                        @if($review->pembeli && $review->pembeli->foto)
-                                            <img src="{{ asset('storage/foto_pembeli/' . $review->pembeli->foto) }}" alt="{{ $review->pembeli->nama }}">
-                                        @else
-                                            <div class="avatar-placeholder">{{ substr($review->pembeli->nama ?? 'U', 0, 1) }}</div>
-                                        @endif
-                                    </div>
-                                    <div class="reviewer-details">
-                                        <h4 class="reviewer-name">{{ $review->pembeli->nama ?? 'Pengguna' }}</h4>
-                                        <div class="review-meta">
-                                            <div class="review-stars">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    <span class="star {{ $i <= $review->nilai ? 'filled' : '' }}">★</span>
-                                                @endfor
-                                            </div>
-                                            <span class="review-date">
-                                                {{ $review->created_at->format('d M Y') }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="review-content">
-                                <p>{{ $review->komentar ?? 'Tidak ada komentar' }}</p>
-                            </div>
+                    <div class="rating-details">
+                        <div class="stars">
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= floor($averageRating))
+                                    <span class="star filled">★</span>
+                                @elseif($i - 0.5 <= $averageRating)
+                                    <span class="star half">★</span>
+                                @else
+                                    <span class="star">★</span>
+                                @endif
+                            @endfor
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="no-reviews">
-                    <div class="no-reviews-icon">⭐</div>
-                    <h3>Belum ada ulasan</h3>
-                    <p>Jadilah yang pertama memberikan ulasan untuk karya ini</p>
+                        <p class="total-reviews">
+                            Berdasarkan {{ $karya->reviews->count() }} ulasan
+                            @if($karya->reviews->sum('responses_count') > 0)
+                                <span class="responses-count">
+                                    • {{ $karya->reviews->sum('responses_count') }} tanggapan seniman
+                                </span>
+                            @endif
+                        </p>
+                    </div>
                 </div>
             @endif
         </div>
-    </section>
+
+        @if($karya->reviews && $karya->reviews->count() > 0)
+            <div class="reviews-list">
+                @foreach($karya->reviews as $review)
+                    @php
+                        // Load responses jika tabel ada
+                        $hasResponses = false;
+                        $responses = collect();
+                        if (\Schema::hasTable('review_responses')) {
+                            $review->load(['responses' => function($query) {
+                                $query->whereNull('deleted_at')->latest();
+                            }, 'responses.seniman']);
+                            $hasResponses = $review->responses->isNotEmpty();
+                            $responses = $review->responses;
+                        }
+                    @endphp
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    @if($review->pembeli && $review->pembeli->foto)
+                                        <img src="{{ asset('storage/foto_pembeli/' . $review->pembeli->foto) }}" alt="{{ $review->pembeli->nama }}">
+                                    @else
+                                        <div class="avatar-placeholder">{{ substr($review->pembeli->nama ?? 'U', 0, 1) }}</div>
+                                    @endif
+                                </div>
+                                <div class="reviewer-details">
+                                    <h4 class="reviewer-name">{{ $review->pembeli->nama ?? 'Pengguna' }}</h4>
+                                    <div class="review-meta">
+                                        <div class="review-stars">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <span class="star {{ $i <= $review->nilai ? 'filled' : '' }}">★</span>
+                                            @endfor
+                                        </div>
+                                        <span class="review-date">
+                                            {{ $review->created_at->format('d M Y') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="review-content">
+                            <p>{{ $review->komentar ?? 'Tidak ada komentar' }}</p>
+                        </div>
+
+                        {{-- Tanggapan seniman (untuk pembeli) --}}
+                        @if($hasResponses)
+                            @foreach($responses as $response)
+                                <div class="seller-response buyer-view">
+                                    <div class="response-header">
+                                        <div class="seller-info">
+                                            <div class="seller-avatar">
+                                                @if($response->seniman && $response->seniman->foto)
+                                                    <img src="{{ asset('storage/foto_seniman/' . $response->seniman->foto) }}" 
+                                                         alt="{{ $response->seniman->nama }}">
+                                                @else
+                                                    <div class="seller-avatar-placeholder">S</div>
+                                                @endif
+                                            </div>
+                                            <div class="seller-details">
+                                                <strong>Balasan Seniman</strong>
+                                                <span class="response-date">
+                                                    {{ $response->created_at->format('d M Y, H:i') }}
+                                                    @if($response->created_at != $response->updated_at)
+                                                        • (Diedit)
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="response-content">
+                                        <p>{{ $response->tanggapan }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="no-reviews">
+                <div class="no-reviews-icon">⭐</div>
+                <h3>Belum ada ulasan</h3>
+                <p>Jadilah yang pertama memberikan ulasan untuk karya ini</p>
+            </div>
+        @endif
+    </div>
+</section>
 
     <!-- Footer -->
     <footer class="footer">
