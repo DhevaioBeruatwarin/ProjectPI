@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
     background: #fff;
     color: #111;
     line-height: 1.6;
@@ -261,8 +261,13 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .sold-badge {
@@ -308,7 +313,7 @@ body {
 }
 
 .code-value {
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     font-size: 16px;
     color: #757575;
     background: #f8f8f8;
@@ -348,7 +353,6 @@ body {
     transform: translateY(-2px);
     border: black 2px solid;
     color: rgb(255, 255, 255);
-    
 }
 
 .btn-delete {
@@ -361,7 +365,6 @@ body {
     background: #000000;
     transform: translateY(-2px);
     color: #fff;
-    
 }
 
 .delete-form {
@@ -564,4 +567,443 @@ body {
     .section-title {
         font-size: 20px;
     }
+}
+
+/* ===== RATING & REVIEWS (SENIMAN) ===== */
+.reviews-section {
+    padding: 80px 0;
+    background: #fff;
+    border-top: 1px solid #e5e5e5;
+}
+
+.reviews-section .section-title {
+    margin-bottom: 32px;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Kartu review utama (mirip detail_karya) */
+.review-card {
+    background: #f8f8f8;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.review-author {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.review-author strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.review-date {
+    font-size: 12px;
+    color: #757575;
+}
+
+.review-rating {
+    display: flex;
+    gap: 2px;
+}
+
+.review-rating .star {
+    font-size: 16px;
+    color: #ddd;
+}
+
+.review-rating .star.filled {
+    color: #ffc107;
+}
+
+.review-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 16px;
+}
+
+.review-body p {
+    margin: 0;
+}
+
+/* Area tanggapan seniman */
+.review-reply {
+    margin-top: 8px;
+    border-top: 1px dashed #ddd;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.seller-reply {
+    background: #111;
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.seller-reply strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reply-form label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111;
+}
+
+.reply-form textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 60px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.reply-form textarea:focus {
+    outline: none;
+    border-color: #111;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-reply {
+    align-self: flex-end;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: #111;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+}
+
+.btn-reply:hover {
+    background: #000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.reviews-section p {
+    font-size: 14px;
+    color: #757575;
+}
+/* Alert Styles */
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border: 1px solid;
+}
+
+.alert-success {
+    background: #f0f9f0;
+    border-color: #2ecc71;
+    color: #27ae60;
+}
+
+.alert-error {
+    background: #fee;
+    border-color: #e74c3c;
+    color: #c0392b;
+}
+
+.alert-icon {
+    font-size: 20px;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+/* Response Section */
+.seller-response-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.seller-response {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    position: relative;
+}
+
+.seller-response:before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #e9ecef;
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.seller-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.seller-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #111;
+}
+
+.seller-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.seller-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.seller-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-details strong {
+    font-size: 14px;
+    color: #111;
+}
+
+.response-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.response-content {
+    color: #333;
+    line-height: 1.6;
+    font-size: 14px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid #111;
+}
+
+/* Response Form */
+.response-form-wrapper {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    border: 2px dashed #dee2e6;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #111;
+    box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.1);
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.char-count {
+    font-size: 12px;
+    color: #888;
+}
+
+.btn-primary.btn-sm {
+    padding: 10px 24px;
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary.btn-sm:hover {
+    background: #000;
+    transform: translateY(-2px);
+}
+
+.responses-count {
+    color: #111;
+    font-weight: 600;
+    background: #e8f4fd;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .response-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .form-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .btn-primary.btn-sm {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* Tombol edit kecil */
+.btn-edit-small {
+    background: none;
+    border: none;
+    color: #3498db;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-edit-small:hover {
+    background: #f0f8ff;
+    color: #2980b9;
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-secondary.btn-sm {
+    padding: 8px 16px;
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-secondary.btn-sm:hover {
+    background: #e5e5e5;
+}
+
+/* Hidden form */
+.is-hidden {
+    display: none;
+}
+
+/* Response header with edit button */
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.seller-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }

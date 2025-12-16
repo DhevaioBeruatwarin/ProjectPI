@@ -133,5 +133,53 @@ class ReviewController extends Controller
         ]);
     }
 
+    /**
+     * Seniman menanggapi review pembeli
+     */
+    /**
+     * Seniman menanggapi review pembeli (menggunakan tabel terpisah)
+     */
+    public function replyAsSeniman(Request $request, $id_review)
+    {
+        $request->validate([
+            'tanggapan' => 'required|string|max:2000',
+        ]);
 
+        $seniman = Auth::guard('seniman')->user();
+        if (!$seniman) {
+            abort(403, 'Hanya seniman yang bisa menanggapi review.');
+        }
+
+        $review = Review::with('karya')->findOrFail($id_review);
+
+        // Pastikan karya milik seniman yang login
+        if (!$review->karya || $review->karya->id_seniman !== $seniman->id_seniman) {
+            abort(403, 'Anda tidak berhak menanggapi review ini.');
+        }
+
+        // Cek apakah sudah ada response sebelumnya
+        $existingResponse = \App\Models\ReviewResponse::where('id_review', $id_review)
+            ->where('id_seniman', $seniman->id_seniman)
+            ->first();
+
+        if ($existingResponse) {
+            // Update response yang sudah ada
+            $existingResponse->update([
+                'tanggapan' => $request->tanggapan
+            ]);
+            $message = 'Tanggapan berhasil diperbarui!';
+        } else {
+            // Buat response baru
+            \App\Models\ReviewResponse::create([
+                'id_review' => $id_review,
+                'id_seniman' => $seniman->id_seniman,
+                'tanggapan' => $request->tanggapan,
+            ]);
+            $message = 'Tanggapan berhasil dikirim!';
+        }
+
+        return redirect()
+            ->route('seniman.karya.detail', ['kode_seni' => $review->kode_seni])
+            ->with('success', $message);
+    }
 }

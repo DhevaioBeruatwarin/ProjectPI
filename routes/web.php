@@ -128,6 +128,9 @@ Route::prefix('seniman')
         // DETAIL KARYA UNTUK SENIMAN - PASTIKAN DI DALAM GRUP SENIMAN
         Route::get('/karya/{kode_seni}', [KaryaSeniController::class, 'showForSeniman'])->name('seniman.karya.detail');
 
+        // Seniman menanggapi review pembeli
+        Route::post('/review/{id_review}/reply', [ReviewController::class, 'replyAsSeniman'])->name('seniman.review.reply');
+
         Route::get('/logout', function () {
             Auth::guard('seniman')->logout();
             return redirect()->route('login')->with('success', 'Berhasil logout!');
