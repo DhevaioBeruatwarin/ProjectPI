@@ -123,14 +123,16 @@
             background: #c9302c;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/Seniman/profile.css') }}">
+
 </head>
 
 <body>
 <div class="row g-0">
-    
+        
     <!-- SIDEBAR -->
     <div class="col-md-3 sidebar">
-        <h5>Admin Dashboard</h5>
+        <h5>Profil Admin</h3>
         <ul>
             <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
             <li><a href="{{ route('admin.profil') }}">Profil</a></li>
@@ -148,11 +150,16 @@
         </ul>
     </div>
 
+    
     <!-- CONTENT -->
     <div class="col-md-9 content">
         @yield('content')
     </div>
 
+    
 </div>
+
 </body>
+
 </html>
+
