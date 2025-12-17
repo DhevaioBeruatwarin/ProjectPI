@@ -9,174 +9,206 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <style>
-    /* Minimal admin-only tweaks to harmonize with user dashboard */
-    .header-admin {
-        width: 100%;
-        background: #231105;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 48px;
-        height: 72px;
-        box-sizing: border-box;
-        box-shadow: 0 2px 16px 0 rgba(35,17,5,0.08);
-    }
-    .header-admin .header-left {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
-    .header-admin .logo {
-        width: 46px;
-        height: 46px;
-        background: #fff;
-        border-radius: 50%;
-        border: 2px solid #dab977;
-        display: flex;
-    }
-    .header-admin .brand {
-        font-weight: 900;
-        font-size: 16px;
-        letter-spacing: 2px;
-        color: #fff;
-        text-transform: uppercase;
-        margin-left: 10px;
-        font-family: 'Montserrat', 'Arial', sans-serif;
-    }
-    .header-admin .header-right img {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: 2px solid #dab977;
-        object-fit: cover;
-        margin-left: 20px;
-        box-shadow: 0 1px 6px rgba(200, 142, 33, 0.08);
-    }
-    .hero-banner {
-        background: linear-gradient(120deg,#402314 55%,#231105 100%);
-        padding: 62px 0 48px;
-    }
-    .hero-banner .hero-content {
-        max-width: 650px;
-        margin: 0 auto;
-        color: #fff;
-    }
-    .hero-banner .hero-title {
-        font-size: 38px;
-        font-family: 'Montserrat', Arial Black, Arial, sans-serif;
-        font-weight: 900;
-        line-height: 1.05;
-        letter-spacing: -2.2px;
-        text-transform: uppercase;
-    }
-    .hero-banner .hero-subtitle {
-        font-size: 18px;
-        font-family: 'Montserrat', sans-serif;
-        margin-top: 14px;
-        color: rgba(255,255,255,0.85);
-        font-weight: 500;
-    }
-    .section-title {
-        margin: 48px auto 22px auto;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 900;
-        font-size: 20px;
-        color: #231105;
-        text-align: center;
-        letter-spacing: 1.3px;
-        text-transform: uppercase;
-    }
-    .product-section {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-    }
-    .product-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(240px, 1fr));
-        gap: 30px;
-        width: 100%;
-        max-width: 900px;
-        margin-bottom: 40px;
-    }
-    .product-card {
-        border-radius: 17px;
-        background: #fff;
-        box-shadow: 0 2px 14px rgba(35, 17, 5, 0.06), 0 1.5px 7px rgba(218, 165, 32, 0.04);
-        border: 1.5px solid #faf4ec;
-        transition: box-shadow 0.21s, transform 0.19s, border-color 0.18s;
-        text-align: center;
-        min-height: 120px;
-    }
-    .product-card:hover {
-        transform: translateY(-8px) scale(1.025);
-        box-shadow: 0 12px 32px #dab97736, 0 1.5px 8px #dab9771d;
-        border-color: #dab977;
-    }
-    .product-image {
-        height: 160px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border-radius: 13px !important;
-        margin: 18px 8px !important;
-        font-size: 18px !important;
-        font-family: 'Montserrat', sans-serif !important;
-        font-weight: 900 !important;
-        letter-spacing: 1px !important;
-        text-transform: uppercase !important;
-    }
-    /* Footer harmonize */
-    footer {
-        background: #231105;
-        color: #fff;
-        padding: 65px 0 24px;
-        margin-top: 80px;
-    }
-    .footer-content {
-        display: flex;
-        justify-content: space-between;
-        max-width: 1200px;
-        margin: 0 auto;
-        gap: 44px;
-        flex-wrap: wrap;
-        padding-bottom: 28px;
-    }
-    .footer-section h3 {
-        color: #dab977;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 900;
-        font-size: 17px;
-        text-transform: uppercase;
-        margin-bottom: 9px;
-        letter-spacing: 1.2px;
-    }
-    .footer-section p, .footer-section a {
-        font-size: 14px;
-        color: rgba(255,255,255,0.88);
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 500;
-        line-height: 1.7;
-        text-decoration: none;
-    }
-    .footer-section a:hover { color: #dab977; }
-    .footer-bottom {
-        border-top: 1px solid rgba(255,255,255,0.10);
-        padding-top: 20px;
-        text-align: center;
-        font-size: 13px;
-        color: rgba(255,255,255,0.58);
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 500;
-        letter-spacing: 1.1px;
-    }
-    @media (max-width:1024px) {
-        .header-admin { padding: 0 20px; }
-        .product-grid { grid-template-columns: 1fr; gap: 22px; }
-        .footer-content { flex-direction: column; gap: 16px; }
-    }
+        body {
+            margin: 0;
+            background: #f9fafb; /* PUTIH ABU TERANG */
+        }
+
+        /* ================= HEADER ================= */
+        .header-admin {
+            width: 100%;
+            background: linear-gradient(120deg,#402314,#231105);
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 48px;
+            height: 72px;
+            box-sizing: border-box;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            width: 46px;
+            height: 46px;
+            background: #fff;
+            border-radius: 50%;
+            border: 2px solid #dab977;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .header-right img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #dab977;
+            object-fit: cover;
+        }
+
+        /* ================= HERO (TENGAH PUTIH) ================= */
+        .hero-banner {
+            background: #000000ff; /* ⬅️ DIUBAH PUTIH */
+            padding: 90px 20px 70px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            color: #ffffffff;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            margin-top: 18px;
+            font-size: 18px;
+            color: #ffffffff;
+        }
+
+        /* ================= BUTTON ================= */
+        .hero-actions {
+            margin-top: 36px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 14px 26px;
+            border-radius: 12px;
+            border: 2px solid #111;
+            background: #111;
+            color: #fff;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            padding: 14px 26px;
+            border-radius: 12px;
+            border: 2px solid #111;
+            background: #fff;
+            color: #111;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        /* ================= SECTION ================= */
+        .section-title {
+            margin: 48px auto 28px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            color: #231105;
+            text-transform: uppercase;
+        }
+
+        .product-section {
+            background: #f9fafb; /* PUTIH TERANG */
+            padding-bottom: 60px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(240px,1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            border-radius: 18px;
+            background: #fff;
+            border: 1.5px solid #eee;
+            text-align: center;
+            transition: 0.25s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.12);
+        }
+
+        .product-image {
+            height: 160px;
+            margin: 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: #0a0a0a;
+            color: #fff;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-section h3 {
+            color: #dab977;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .footer-section p, 
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        @media(max-width: 900px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -258,30 +290,32 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Jogja Artsphere</h3>
-                <p>Jl. Malioboro No. 123</p>
-                <p>Yogyakarta 55271</p>
-                <p>Telp: (0274) 123-4567</p>
-                <p>Email: info@jogja-artsphere.com</p>
-            </div>
-
-            <div class="footer-section">
-                <h3>Informasi</h3>
-                <div class="footer-links">
+     <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Jogja Artsphere</h4>
+                    <p>Platform seni modern & terkurasi.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Kontak</h4>
+                    <p>Jl. Malioboro 123</p>
+                    <p>Yogyakarta</p>
+                    <p>info@jogja-artsphere.com</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Bantuan</h4>
                     <a href="#">Tentang Kami</a>
-                    <a href="#">Pusat Bantuan</a>
-                    <a href="#">Kebijakan Privasi</a>
+                    <a href="#">Hubungi Kami</a>
                 </div>
             </div>
-        </div>
 
-        <div class="footer-bottom">
-            <p><strong>Jogja Artsphere</strong> - Rumah bagi kreativitas lokal Yogyakarta.</p>
+            <div class="footer-bottom">
+                <p>© {{ date('Y') }} Jogja Artsphere. All rights reserved.</p>
+            </div>
         </div>
     </footer>
+
 </body>
 </html>
